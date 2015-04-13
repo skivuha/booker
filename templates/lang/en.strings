@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ISTRINGTABLE LANG="en">
+    <ISTRING>
+        <KEY>HEAD</KEY>
+        <VALUE>Sign in to your account</VALUE>
+    </ISTRING>
+	<ISTRING>
+        <KEY>NAME</KEY>
+        <VALUE>Name</VALUE>
+    </ISTRING>
+	<ISTRING>
+        <KEY>PASS</KEY>
+        <VALUE>Password</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SIGNINBUTTON</KEY>
+        <VALUE>Sign in</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SAVE</KEY>
+        <VALUE>Remember me</VALUE>
+    </ISTRING>
+</ISTRINGTABLE>
+

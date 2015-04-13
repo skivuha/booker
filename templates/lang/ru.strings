@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ISTRINGTABLE LANG="ru">
+    <ISTRING>
+        <KEY>HEAD</KEY>
+        <VALUE>Войдите в вашу учетную запись</VALUE>
+    </ISTRING>
+	<ISTRING>
+        <KEY>NAME</KEY>
+        <VALUE>Имя</VALUE>
+    </ISTRING>
+	<ISTRING>
+        <KEY>PASS</KEY>
+        <VALUE>Пароль</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SIGNINBUTTON</KEY>
+        <VALUE>Войти</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SAVE</KEY>
+        <VALUE>Сохранить регистрацию</VALUE>
+    </ISTRING>
+</ISTRINGTABLE>
