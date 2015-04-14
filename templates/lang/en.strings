@@ -17,8 +17,28 @@
         <VALUE>Sign in</VALUE>
     </ISTRING>
     <ISTRING>
-        <KEY>SAVE</KEY>
-        <VALUE>Remember me</VALUE>
+        <KEY>1</KEY>
+        <VALUE>January</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>2</KEY>
+        <VALUE>February</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>3</KEY>
+        <VALUE>March</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>4</KEY>
+        <VALUE>April</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>5</KEY>
+        <VALUE>May</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>6</KEY>
+        <VALUE>June</VALUE>
     </ISTRING>
 </ISTRINGTABLE>
 

@@ -12,6 +12,7 @@ class Calendar
 	private $subMonth;
 	private $subYear;
 	private $nameMonth;
+	private $flagParams;
 	
 	private function getCurrentData()
 	{
@@ -20,9 +21,10 @@ class Calendar
 		$this->currentYear = date('Y');
 	}
 
-	public function getNewData($var)
+	private function getNewData()
 	{
-		if(true === $var)
+		$this->getCurrentData();
+		if(true === $this->flagParams)
 		{
 			$data = Router::getInstance();
 			$getParam = $data->getParams();
@@ -34,8 +36,8 @@ class Calendar
 			$this->newMonth = $this->currentMonth;
 			$this->newYear = $this->currentYear;
 		}
-		$selectedMonth = mktime(0,0,0, $this->newMonth,1,$this->newYear);
-		$this->nameMonth = (date('F', $selectedMonth));
+		//$selectedMonth = mktime(0,0,0, $this->newMonth,1,$this->newYear);
+		//$this->nameMonth = (date('F', $selectedMonth));
 		$this->subYear = $this->newYear;
 		$this->subMonth = $this->newMonth -1;
 		if(0 >= $this->subMonth)
@@ -54,13 +56,13 @@ class Calendar
 	
 	public function getCalendar()
 	{
+		$this->getNewData();
 		$day_count = 1;
 		$this->dayofmonth = date('t', mktime(0, 0, 0, $this->newMonth, date('d'),
 			$this->newYear));
 		for($j=1; $j<=6; $j++)
 		{
-			for ($i = 1; $i <= 7; $i ++)
-			{
+			for ($i = 1; $i <= 7; $i ++) {
 				$dayOfWeek = date('N', mktime(0, 0, 0, $this->newMonth, $day_count,
 					$this->newYear));
 				if ($i == $dayOfWeek && $day_count <= $this->dayofmonth)
@@ -83,7 +85,7 @@ class Calendar
 
 	public function printCalendar()
 	{
-		$this->getNewData(true);
+
 		$var = $this->getCalendar();
 		$data = '';
 		foreach($var as $key=>$val)
@@ -115,11 +117,15 @@ class Calendar
 
 		$da['LOWER'] = 'year/'.$this->subYear.'/month/'.$this->subMonth;
 		$da['HIGHER'] = 'year/'.$this->nextYear.'/month/'.$this->nextMonth;
-		$da['CURRENT'] = $this->nameMonth. - $this->currentYear;
+		$da['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
+			.$this->newYear;
 		$da['CONTENT'] = $data;
 	return $da;
 	}
-	
-	
+
+	public function setFlagParams($var)
+	{
+		$this->flagParams = $var;
+	}
 }
 ?>

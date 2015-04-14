@@ -7,10 +7,10 @@ class Check
 	private $cookie;
 	private $session;
 	private $myPdo;
+	private $redirect;
 
 	public function __construct()
 	{
-		//$this->fc = Router::getInstance();
 		$this->valid = new Validator();
 		$this->cookie = new Cookie();
 		$this->session = Session::getInstance();
@@ -29,14 +29,29 @@ class Check
 
 	private function choiseLang()
 	{
+		$this->redirect();
 		$post_clear = $this->valid->clearDataArr($_POST);
 		if ('ru' === $post_clear['leng'])
 		{
 			$this->cookie->add('langanator', 'ru');
+			header('Location:' .$this->redirect);
 		}
 		elseif ('en' === $post_clear['leng'])
 		{
 			$this->cookie->add('langanator', 'en');
+			header('Location:' .$this->redirect);
+		}
+	}
+
+	private function redirect()
+	{
+		if(isset($_SERVER['HTTP_REFERER']))
+		{
+			$this->redirect = $_SERVER['HTTP_REFERER'];
+		}
+		else
+		{
+			$this->redirect = PATH;
 		}
 	}
 
