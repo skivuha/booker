@@ -1,17 +1,22 @@
 <?php
 class CalendarController extends Controller
 {
+
 	public function __construct()
 	{
 		$this->accessToCalendar();
+		$this->arrayLang();
 	}
+
 	public function indexAction()
 	{
 		$cal = new Calendar();
+		$cal->setFirstDay($this->getFirstDay());
 		$b = $cal->printCalendar();
 		$view = new View;
 		$view->addToReplace($b);
 		$view->addToReplace($this->langArr);
+
 		$view->setTemplateFile('calendar')->templateRenderContent();
 		$view->setTemplateFile('workpage')->templateRenderContent();
 		$view->setTemplateFile('index')->templateRender();
@@ -20,6 +25,7 @@ class CalendarController extends Controller
 	public function anotherAction()
 	{
 		$cal = new Calendar();
+		$cal->setFirstDay($this->getFirstDay());
 		$getParam = false;
 		$data = Router::getInstance();
 		$params = $data->getParams();
@@ -35,8 +41,6 @@ class CalendarController extends Controller
 		$view->setTemplateFile('calendar')->templateRenderContent();
 		$view->setTemplateFile('workpage')->templateRenderContent();
 		$view->setTemplateFile('index')->templateRender();
-
 	}
-
 }
 ?>

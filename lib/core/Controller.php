@@ -6,20 +6,26 @@
  */
 abstract class Controller
 {
-	private $session;
-	private $check;
-	private $cookie;
+	protected $session;
+	protected $check;
+	protected $cookie;
 	protected $userAuth;
 	protected $langArr;
 
 	public function __construct()
 	{
+
 		$this->userAuth = false;
 		$this->session = Session::getInstance();
-		$this->cookie = new Cookie();
 		$this->check = new Check();
 		$this->checkUser();
 		$this->arrayLang();
+	}
+
+	protected function getFirstDay()
+	{
+		$this->cookie = new Cookie();
+		return $this->cookie->read('user2_firstday');
 	}
 
 	private function checkUser()
@@ -27,10 +33,13 @@ abstract class Controller
 		return $this->userAuth = $this->check->getUserStatus();
 	}
 
-	private function arrayLang()
+	protected function arrayLang()
 	{
-		$langObj = new Lang($this->cookie->read('langanator'));
+		$this->cookie = new Cookie();
+		$lang = $this->cookie->read('langanator');
+		$langObj = new Lang($lang);
 		$this->langArr = $langObj->getLangArr();
+		return $this->langArr;
 	}
 
 	protected function accessToCalendar()

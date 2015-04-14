@@ -10,6 +10,7 @@ class Error404Controller extends Controller
 	{
 		$view = new View();
 		$view->setTemplateFile('err404')->templateRender();
+
 	}
 }
 ?>

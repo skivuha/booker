@@ -62,7 +62,6 @@ class View
 	public function templateRenderContent()
 	{
 		$this->renderFile();
-		//$this->langRender();
 		$default = '';
 		$this->file = preg_replace('/{{(.*)}}/Uis', $default, $this->file);
 		$this->forRender['CONTENT'] = $this->file;

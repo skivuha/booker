@@ -2,7 +2,6 @@
 
 class Check
 {
-	//private $fc;
 	private $valid;
 	private $cookie;
 	private $session;
@@ -17,6 +16,7 @@ class Check
 		$this->myPdo = MyPdo::getInstance();
 		$this->lang();
 		$this->choiseLang();
+		$this->setFirstDay();
 	}
 
 	private function lang()
@@ -24,6 +24,22 @@ class Check
 		if ( ! isset($_COOKIE['langanator']))
 		{
 			$this->cookie->add('langanator', 'en');
+		}
+	}
+
+	private function setFirstDay()
+	{
+		$this->redirect();
+		$post_clear = $this->valid->clearDataArr($_POST);
+		if ('sunday' === $post_clear['firstday'])
+		{
+			$this->cookie->add('user2_firstday', 'sunday');
+			header('Location:' .$this->redirect);
+		}
+		elseif('monday' === $post_clear['firstday'])
+		{
+			$this->cookie->add('user2_firstday', 'monday');
+			header('Location:' .$this->redirect);
 		}
 	}
 

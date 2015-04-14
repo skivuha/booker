@@ -11,9 +11,18 @@ class Calendar
 	private $nextYear;
 	private $subMonth;
 	private $subYear;
-	private $nameMonth;
+	private $startDay;
 	private $flagParams;
-	
+	private $saturday;
+	private $sunday;
+	private $headTable;
+	private $disable;
+
+	public function setFirstDay($var)
+	{
+		$this->startDay = $var;
+	}
+
 	private function getCurrentData()
 	{
 		$this->currentDay = date('d');
@@ -36,10 +45,8 @@ class Calendar
 			$this->newMonth = $this->currentMonth;
 			$this->newYear = $this->currentYear;
 		}
-		//$selectedMonth = mktime(0,0,0, $this->newMonth,1,$this->newYear);
-		//$this->nameMonth = (date('F', $selectedMonth));
 		$this->subYear = $this->newYear;
-		$this->subMonth = $this->newMonth -1;
+		$this->subMonth = $this->newMonth - 1;
 		if(0 >= $this->subMonth)
 		{
 			$this->subYear = $this->subYear - 1;
@@ -49,7 +56,7 @@ class Calendar
 		$this->nextYear = $this->newYear;
 		if ($this->nextMonth > 12)
 		{
-			$this->nextYear = $this->nextYear +1;
+			$this->nextYear = $this->nextYear + 1;
 			$this->nextMonth = 1;
 		}
 	}
@@ -57,17 +64,32 @@ class Calendar
 	public function getCalendar()
 	{
 		$this->getNewData();
-		$day_count = 1;
+		$day_count = 0;
 		$this->dayofmonth = date('t', mktime(0, 0, 0, $this->newMonth, date('d'),
 			$this->newYear));
 		for($j=1; $j<=6; $j++)
 		{
-			for ($i = 1; $i <= 7; $i ++) {
-				$dayOfWeek = date('N', mktime(0, 0, 0, $this->newMonth, $day_count,
+			for ($i = 0; $i < 7; $i++) {
+				$dayOfWeek = date('w', mktime(0, 0, 0, $this->newMonth, $day_count,
 					$this->newYear));
+				$this->saturday = 6;
+				$this->sunday = 0;
+				$this->disable = false;
+				$this->headTable = array(0,1,2,3,4,5,6);
+				if('monday' === $this->startDay)
+				{
+					$this->disable = true;
+					$this->saturday = 5;
+					$this->sunday = 6;
+					$this->headTable = array(1,2,3,4,5,6,0);
+					$dayOfWeek = $dayOfWeek - 1;
+					if (- 1 == $dayOfWeek)
+					{
+						$dayOfWeek = 6;
+					}
+				}
 				if ($i == $dayOfWeek && $day_count <= $this->dayofmonth)
 				{
-
 					$week[$j][$i] = $day_count;
 					if($day_count <= $this->dayofmonth)
 					{
@@ -85,9 +107,13 @@ class Calendar
 
 	public function printCalendar()
 	{
-
 		$var = $this->getCalendar();
-		$data = '';
+		$data = $head = '';
+		foreach($this->headTable as $val)
+		{
+			$head .= '<th>%LANG_HEAD_'.$val.'%</th>';
+		}
+
 		foreach($var as $key=>$val)
 		{
 			$data .= '<tr>';
@@ -95,10 +121,12 @@ class Calendar
 			{
 				if(!empty($value))
 				{
-					if (6 == $key2 || 7 == $key2)
-					{
-						$data .= '<td style="color: red">' . $value . '<br>&nbsp;</td>';
-					}
+
+						if ($this->saturday == $key2 || $this->sunday == $key2)
+						{
+							$data .= '<td style="color: red">' . $value . '<br>&nbsp;</td>';
+						}
+
 					else
 					{
 						$data .= '<td>' . $value . '<br>&nbsp;{{EVENT_
@@ -114,13 +142,21 @@ class Calendar
 		}
 
 		$this->getCurrentData();
-
-		$da['LOWER'] = 'year/'.$this->subYear.'/month/'.$this->subMonth;
-		$da['HIGHER'] = 'year/'.$this->nextYear.'/month/'.$this->nextMonth;
-		$da['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
+		if(true === $this->disable)
+		{
+			$calendar['DISABLEM'] = 'disabled="disabled"';
+		}
+		else
+		{
+			$calendar['DISABLES'] = 'disabled="disabled"';
+		}
+		$calendar['HEADCALENDAR'] = $head;
+		$calendar['LOWER'] = 'year/'.$this->subYear.'/month/'.$this->subMonth;
+		$calendar['HIGHER'] = 'year/'.$this->nextYear.'/month/'.$this->nextMonth;
+		$calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
 			.$this->newYear;
-		$da['CONTENT'] = $data;
-	return $da;
+		$calendar['CONTENT'] = $data;
+	return $calendar;
 	}
 
 	public function setFlagParams($var)
