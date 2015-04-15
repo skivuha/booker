@@ -1,8 +1,8 @@
 <?php
 
 define('SALT', "mimimi");
-define('TEMPLATE', "templates/html/");
-define('LANG', "templates/lang/");
+//define('TEMPLATE', "templates/html/");
+//define('LANG', "templates/lang/");
 
 //home
 //define('DB_HOST', 'localhost');
@@ -28,7 +28,8 @@ define('CONTROLLER', '3');
 define('ACTION', '4');
 define('PARAM', '5');
 
-
+define('TEMPLATE', "/~user2/PHP/booker/templates/html/");
+define('LANG', "/~user2/PHP/booker/templates/lang/");
 
 
 ?>
