@@ -143,8 +143,7 @@ class Calendar
 
 					else
 					{
-						$data .= '<td>' . $value . '<br>&nbsp;{{EVENT_
-'.$value.'}}</td>';
+						$data .= '<td>' . $value . '<br>&nbsp;{{EVENT'.$value.'}}</td>';
 					}
 				}
 				else
@@ -154,16 +153,16 @@ class Calendar
 			}
 			$data.= '</tr>';
 		}
-
 		$this->getCurrentData();
-		$this->getAppointments();
 		if(true === $this->disable)
 		{
-			$this->calendar['DISABLEM'] = 'disabled="disabled"';
+			$this->calendar['FIRSTDAY'] = 'sunday';
+			$this->calendar['FIRSTDAYB'] = '%LANG_SUNDAY%';
 		}
 		else
 		{
-			$this->calendar['DISABLES'] = 'disabled="disabled"';
+			$this->calendar['FIRSTDAY'] = 'monday';
+			$this->calendar['FIRSTDAYB'] = '%LANG_MONDAY%';
 		}
 		$this->calendar['HEADCALENDAR'] = $head;
 		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
@@ -173,6 +172,9 @@ class Calendar
 		$this->calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
 			.$this->newYear;
 		$this->calendar['CONTENT'] = $data;
+		$this->getAppointments();
+//		var_dump($this->calendar);
+//		die();
 	return $this->calendar;
 	}
 
@@ -184,15 +186,16 @@ class Calendar
 	private function getAppointments()
 	{
 		$myPdo = MyPdo::getInstance();
-		$arr = $myPdo->select('*')
-			->table("appointments where start &gt; '$this->firstDayTimeStampChoiseMonth' and end &lt;
-				'$this->lastDayTimeStampChoiseMonth'")
-			->query()
-			->commit();
-		var_dump($arr);
-		
-		var_dump($this->firstDayTimeStampChoiseMonth);
-		var_dump($this->lastDayTimeStampChoiseMonth);
+    $arr = $myPdo->select('*')
+      ->table('appointments')
+      ->where(array('start'=> 1))
+      ->query()
+      ->commit();
+      foreach($arr as $key=>$val)
+      {
+	 $this->calendar['EVENT'.date('d',$val['start'])].= '<br><a href="#" target="_blank">'.date('H', $val['start']).':'.date('i', $val['start']).'
+	  - '.date('H', $val['end']).':'.date('i', $val['end']).'</a>';
+	}
 	}
 }
 ?>

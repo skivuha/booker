@@ -249,7 +249,7 @@ class MyPdo
             {
                 foreach ($this->whereArr as $key => $val)
                 {
-                    $where = "WHERE $key = :$key";
+                    $where = "WHERE $key > :$key";
                 }
             }
             else

@@ -1,108 +1,99 @@
-<?xml version="1.0"?>
-<ISTRINGTABLE LANG="en">
+<?xml version="1.0" encoding="utf-8"?>
+<ISTRINGTABLE LANG="ru">
     <ISTRING>
         <KEY>HEADER</KEY>
-        <VALUE>Sign in to your account</VALUE>
+        <VALUE>Войдите в вашу учетную запись</VALUE>
     </ISTRING>
 	<ISTRING>
         <KEY>NAME</KEY>
-        <VALUE>Name</VALUE>
+        <VALUE>Имя</VALUE>
     </ISTRING>
 	<ISTRING>
         <KEY>PASS</KEY>
-        <VALUE>Password</VALUE>
+        <VALUE>Пароль</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>SIGNINBUTTON</KEY>
-        <VALUE>Sign in</VALUE>
+        <VALUE>Войти</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>SAVE</KEY>
-        <VALUE>Remember me</VALUE>
+        <VALUE>Сохранить регистрацию</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>1</KEY>
-        <VALUE>January</VALUE>
+        <VALUE>Январь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>2</KEY>
-        <VALUE>February</VALUE>
+        <VALUE>Февраль</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>3</KEY>
-        <VALUE>March</VALUE>
+        <VALUE>Март</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>4</KEY>
-        <VALUE>April</VALUE>
+        <VALUE>Апрель</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>5</KEY>
-        <VALUE>May</VALUE>
+        <VALUE>Май</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>6</KEY>
-        <VALUE>June</VALUE>
+        <VALUE>Июнь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>7</KEY>
-        <VALUE>July</VALUE>
+        <VALUE>Июль</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>8</KEY>
-        <VALUE>August</VALUE>
+        <VALUE>Август</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>9</KEY>
-        <VALUE>September</VALUE>
+        <VALUE>Сентябрь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>10</KEY>
-        <VALUE>October</VALUE>
+        <VALUE>Октябрь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>11</KEY>
-        <VALUE>November</VALUE>
+        <VALUE>Ноябрь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>12</KEY>
-        <VALUE>December</VALUE>
+        <VALUE>Декабрь</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_1</KEY>
-        <VALUE>Monday</VALUE>
+        <VALUE>Понедельник</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_2</KEY>
-        <VALUE>Tuesday</VALUE>
+        <VALUE>Вторник</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_3</KEY>
-        <VALUE>Wednesday</VALUE>
+        <VALUE>Среда</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_4</KEY>
-        <VALUE>Thursday</VALUE>
+        <VALUE>Четверг</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_5</KEY>
-        <VALUE>Friday</VALUE>
+        <VALUE>Пятница</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_6</KEY>
-        <VALUE>Saturday</VALUE>
+        <VALUE>Суббота</VALUE>
     </ISTRING>
     <ISTRING>
         <KEY>HEAD_0</KEY>
-        <VALUE>Sunday</VALUE>
-    </ISTRING>
-    <ISTRING>
-	<KEY>SUNDAY</KEY>
-	<VALUE>Sunday</VALUE>
-    </ISTRING>
-    <ISTRING>
-	<KEY>MONDAY</KEY>
-	<VALUE>Monday</VALUE>
+        <VALUE>Воскресенье</VALUE>
     </ISTRING>
 </ISTRINGTABLE>
-

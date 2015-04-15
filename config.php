@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Kiev');
 
 define('SALT', "mimimi");
 //define('TEMPLATE', "templates/html/");
@@ -28,8 +29,8 @@ define('CONTROLLER', '3');
 define('ACTION', '4');
 define('PARAM', '5');
 
-define('TEMPLATE', "/~user2/PHP/booker/templates/html/");
-define('LANG', "/~user2/PHP/booker/templates/lang/");
+define('TEMPLATE', "/usr/home/user2/public_html/PHP/booker/templates/html/");
+define('LANG', "/usr/home//user2/public_html/PHP/booker/templates/lang/");
 
 
 ?>

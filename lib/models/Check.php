@@ -42,6 +42,15 @@ class Check
 			header('Location:' .$this->redirect);
 		}
 	}
+	
+	private function setRoom()
+	{
+	    $this->redirect();
+	    $post_clear = $this->valid->clearDataArr($_POST);
+	    $post_room = abs((int)$_POST[selectedroom]);
+	    $this->cookie->add('user2_room', '$post_room');
+	    header('Location:' .$this->redirect);
+	}
 
 	private function choiseLang()
 	{

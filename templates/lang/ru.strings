@@ -96,4 +96,12 @@
         <KEY>HEAD_0</KEY>
         <VALUE>Воскресенье</VALUE>
     </ISTRING>
+    <ISTRING>
+	<KEY>SUNDAY</KEY>
+	<VALUE></VALUE>
+    </ISTRING>
+    <ISTRING>
+    <KEY>MONDAY</KEY>
+    <VALUE></VALUE>
+    </ISTRING>
 </ISTRINGTABLE>
