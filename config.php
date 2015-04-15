@@ -22,7 +22,7 @@ define('DB_LOGIN', 'user2');
 define('DB_NAME', 'user2');
 define('DB_PASS','tuser2');
 
-define('PATH', '/~user2/PHP/shop/');
+define('PATH', '/~user2/PHP/booker/');
 
 define('CONTROLLER', '3');
 define('ACTION', '4');
