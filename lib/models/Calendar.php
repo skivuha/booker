@@ -1,12 +1,12 @@
 <?php
 class Calendar
 {
-	private $dayofmonth;
 	private $currentMonth;
 	private $newMonth;
 	private $currentYear;
 	private $newYear;
 	private $currentDay;
+	private $countDayOfCurrentMonth;
 	private $nextMonth;
 	private $nextYear;
 	private $subMonth;
@@ -17,6 +17,10 @@ class Calendar
 	private $sunday;
 	private $headTable;
 	private $disable;
+	private $calendar;
+	private $firstDayTimeStampChoiseMonth;
+	private $lastDayTimeStampChoiseMonth;
+	private $currentDayTimeStamp;
 
 	public function setFirstDay($var)
 	{
@@ -60,13 +64,23 @@ class Calendar
 			$this->nextMonth = 1;
 		}
 	}
-	
-	public function getCalendar()
+
+	private function getTimeStamp()
+	{
+		$this->countDayOfCurrentMonth = date('t',
+			strtotime($this->newYear.'-'.$this->newMonth));
+		$this->firstDayTimeStampChoiseMonth = mktime(0, 0, 0, $this->newMonth, 1,
+			$this->newYear);
+		$this->lastDayTimeStampChoiseMonth = mktime(23, 59, 59, $this->newMonth,
+			$this->countDayOfCurrentMonth, $this->newYear);
+		$this->currentDayTimeStamp = time();
+	}
+
+	private function getCalendar()
 	{
 		$this->getNewData();
+		$this->getTimeStamp();
 		$day_count = 0;
-		$this->dayofmonth = date('t', mktime(0, 0, 0, $this->newMonth, date('d'),
-			$this->newYear));
 		for($j=1; $j<=6; $j++)
 		{
 			for ($i = 0; $i < 7; $i++) {
@@ -88,10 +102,10 @@ class Calendar
 						$dayOfWeek = 6;
 					}
 				}
-				if ($i == $dayOfWeek && $day_count <= $this->dayofmonth)
+				if ($i == $dayOfWeek && $day_count <= $this->countDayOfCurrentMonth)
 				{
 					$week[$j][$i] = $day_count;
-					if($day_count <= $this->dayofmonth)
+					if($day_count <= $this->countDayOfCurrentMonth)
 					{
 						$day_count ++;
 					}
@@ -142,26 +156,43 @@ class Calendar
 		}
 
 		$this->getCurrentData();
+		$this->getAppointments();
 		if(true === $this->disable)
 		{
-			$calendar['DISABLEM'] = 'disabled="disabled"';
+			$this->calendar['DISABLEM'] = 'disabled="disabled"';
 		}
 		else
 		{
-			$calendar['DISABLES'] = 'disabled="disabled"';
+			$this->calendar['DISABLES'] = 'disabled="disabled"';
 		}
-		$calendar['HEADCALENDAR'] = $head;
-		$calendar['LOWER'] = 'year/'.$this->subYear.'/month/'.$this->subMonth;
-		$calendar['HIGHER'] = 'year/'.$this->nextYear.'/month/'.$this->nextMonth;
-		$calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
+		$this->calendar['HEADCALENDAR'] = $head;
+		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
+			.$this->subMonth;
+		$this->calendar['HIGHER'] = 'year/'.$this->nextYear.'/month/'
+			.$this->nextMonth;
+		$this->calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
 			.$this->newYear;
-		$calendar['CONTENT'] = $data;
-	return $calendar;
+		$this->calendar['CONTENT'] = $data;
+	return $this->calendar;
 	}
 
 	public function setFlagParams($var)
 	{
 		$this->flagParams = $var;
+	}
+
+	private function getAppointments()
+	{
+		$myPdo = MyPdo::getInstance();
+		/*$arr = $myPdo->select('*')
+			->table("appointments where start > '$this->firstDayTimeStampChoiseMonth' and end <
+				'$this->lastDayTimeStampChoiseMonth'")
+			->query()
+			->commit();
+		var_dump($arr);
+		*/
+		var_dump($this->firstDayTimeStampChoiseMonth);
+		var_dump($this->lastDayTimeStampChoiseMonth);
 	}
 }
 ?>

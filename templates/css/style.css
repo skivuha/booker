@@ -1,8 +1,8 @@
 table{
-    width: 770px !important;
+    min-width: 770px !important;
 }
 table tr td{
-    width: 110px;
+    min-width: 110px;
     height: 110px;
 }
 table tr th{
