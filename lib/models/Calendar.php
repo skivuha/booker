@@ -184,13 +184,13 @@ class Calendar
 	private function getAppointments()
 	{
 		$myPdo = MyPdo::getInstance();
-		/*$arr = $myPdo->select('*')
-			->table("appointments where start > '$this->firstDayTimeStampChoiseMonth' and end <
+		$arr = $myPdo->select('*')
+			->table("appointments where start &gt; '$this->firstDayTimeStampChoiseMonth' and end &lt;
 				'$this->lastDayTimeStampChoiseMonth'")
 			->query()
 			->commit();
 		var_dump($arr);
-		*/
+		
 		var_dump($this->firstDayTimeStampChoiseMonth);
 		var_dump($this->lastDayTimeStampChoiseMonth);
 	}
