@@ -2,7 +2,7 @@
 class Employee
 {
 	private $myPdo;
-	private $delete;
+	private $flag;
 
 	public function __construct()
 	{
@@ -16,14 +16,14 @@ class Employee
 				name_employee')->table('employee')->query()->commit();
 		return $arr;
 	}
-	public function setDelete($var)
+	public function setFlag($var)
 	{
-		$this->delete = $var;
+		$this->flag = $var;
 	}
 
 	public function deleteEmployee()
 	{
-		if (true === $this->delete)
+		if (true === $this->flag)
 		{
 			$id_employee = $this->data->getParams();
 			$rez = $this->myPdo->delete()
@@ -33,6 +33,23 @@ class Employee
 				->commit();
 		}
 		return $rez;
+	}
+
+	public function editEmployee()
+	{
+		if (true === $this->flag)
+		{
+			$id_employee = $this->data->getParams();
+			$rez = $this->myPdo->select('mail_employee, name_employee')
+				->table('employee')
+				->where(array('id_employee'=>$id_employee['id']),array('='))
+				->query()
+				->commit();
+
+			$arr['EMPLOYEE_N'] = $rez[0]['name_employee'];
+			$arr['EMPLOYEE_EMAIL'] = $rez[0]['mail_employee'];
+		}
+		return $arr;
 	}
 }
 ?>

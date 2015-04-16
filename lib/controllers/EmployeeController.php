@@ -3,33 +3,24 @@ class EmployeeController extends Controller
 {
 	private $data;
 	private $employee;
+	private $arrRender;
+	private $view;
 
 	public function __construct()
 	{
 		$this->data = Router::getInstance();
 		$this->employee = new Employee();
+		$this->view = new View;
 		$this->valid = new Validator();
 		$this->accessToCalendar();
 		$this->arrayLang();
 	}
 	public function indexAction()
 	{
-		$view = new View;
-		$view->addToReplace($this->langArr);
-		$employees = $this->employee->getEmployee();
-		$cnt = 1;
-		foreach($employees as $key => $val)
-		{
-			$arr = array('CNT'=>$cnt,'EMPLOYEE_NAME'=>$val['name_employee'],
-				'EMPLOYEE_ID'=>$val['id_employee']);
-			$cnt++;
-			$view->addToReplace($arr);
-			$arrRender['LISTEMPLOYEES'] .= $view->setTemplateFile('employeeslist')
-				->renderFile();
-		}
-		$view->addToReplace($arrRender);
-		$view->setTemplateFile('employeeedit')->templateRenderContent();
-		$view->setTemplateFile('index')->templateRender();
+		$this->view->addToReplace($this->langArr);
+		$this->listEmployee();
+		$this->arrayToPrint();
+
 	}
 
 	public function deleteAction()
@@ -38,7 +29,7 @@ class EmployeeController extends Controller
 		$params = $this->valid->clearDataArr($params);
 		if(isset($params['id']))
 		{
-			$this->employee->setDelete(true);
+			$this->employee->setFlag(true);
 		}
 		if(true === $this->employee->deleteEmployee())
 		{
@@ -48,7 +39,39 @@ class EmployeeController extends Controller
 
 	public function editAction()
 	{
-		
+		$params = $this->data->getParams();
+		$params = $this->valid->clearDataArr($params);
+		if(isset($params['id']))
+		{
+			$this->employee->setFlag(true);
+		}
+			$employee = $this->employee->editEmployee();
+			$this->view->addToReplace($employee);
+			$this->listEmployee();
+			$this->arrayToPrint();
+	}
+
+	private function arrayToPrint()
+	{
+		$this->view->addToReplace($this->arrRender);
+		$this->view->setTemplateFile('employeeedit')->templateRenderContent();
+		$this->view->setTemplateFile('index')->templateRender();
+	}
+
+	private function listEmployee()
+	{
+		$employees = $this->employee->getEmployee();
+		$cnt = 1;
+		foreach($employees as $key => $val)
+		{
+			$arr = array('CNT'=>$cnt,'EMPLOYEE_NAME'=>$val['name_employee'],
+									 'EMPLOYEE_ID'=>$val['id_employee']);
+			$cnt++;
+			$this->view->addToReplace($arr);
+			$this->arrRender['LISTEMPLOYEES'] .= $this->view->setTemplateFile
+			('employeeslist')
+				->renderFile();
+		}
 	}
 }
 ?>
