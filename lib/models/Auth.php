@@ -62,7 +62,7 @@ class Auth
 				$arr = $this->myPdo->select('id_employee, mail_employee,
 				 passwd_employee, key_employee, name_employee')
 					->table('employee')
-					->where(array('name_employee' => $name))
+					->where(array('name_employee' => $name), array('='))
 					->query()
 					->commit();
 				if (empty($arr))
@@ -87,7 +87,7 @@ class Auth
 							$code_employee = $encode->generateCode($arr[0]['name_employee']);
 							$this->myPdo->update()
 								->table("employee SET code_employee = '$code_employee'")
-								->where(array('name_employee' => $name))
+								->where(array('name_employee' => $name), array('='))
 								->query()
 								->commit();
 							$this->cookie->add('code_employee', $code_employee);

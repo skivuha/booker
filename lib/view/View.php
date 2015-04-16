@@ -9,7 +9,6 @@ class View
 	private $forRender;
 	private $file;
 	private $template;
-	private $langArr;
 
 	public function __construct()
 	{
@@ -51,12 +50,13 @@ class View
 		}
 	}
 
-	private function renderFile()
+	public function renderFile()
 	{
 		foreach ($this->forRender as $key => $val)
 		{
 			$this->file = preg_replace('/{{' . $key . '}}/i', $val, $this->file);
 		}
+		return $this->file;
 	}
 
 	public function templateRenderContent()
@@ -67,18 +67,6 @@ class View
 		$this->forRender['CONTENT'] = $this->file;
 	}
 
-	public function templateRenderСycle($arr)
-	{
-		foreach ($arr as $key => $val)
-		{
-			foreach($val as $key=> $val)
-			{
-				$this->file = preg_replace('/{{' . CYCLE . '}}/i', $val, $this->file);
-				$this->forRender['CONTENT'] .= $this->file;
-				$this->setTemplateFile('row');
-			}
-		}
-	}
 
 	public function templateRender()
 	{

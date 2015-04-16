@@ -15,6 +15,7 @@ class MyPdo
     protected $update;
     protected $insert;
     protected $old;
+		protected $znak;
     protected $new;
     protected $query;
     protected $limit_start;
@@ -115,46 +116,14 @@ class MyPdo
         return $this;
     }
 
-    public function join($val)
-    {
-        if(trim($val)=='')
-        {
-            $this->queryError.= "Error. Table is empty!.<br>";
-            return $this;
-        }
-        else
-        {
-            $val= $this->protect($val);
-            $this->join = $val;
-        }
-        return $this;
-    }
-
-
-    /*public function where($is, $val)
-    {
-        if(trim($val)=='' || trim($is)=='')
-        {
-            $this->queryError.="Error. Wrong parametre WHERE<br>";
-            return $this;
-        }
-        else
-        {
-            $is=$this->protect($is);
-            $this->is=$is;
-            $this->where=$val;
-        }
-        return $this;
-    }*/
-
 /*
 *where
 *
 *@param val: takes value coll.
 */
-    public function where($arr)
+    public function where($arr, $znak)
 {
-    if(!is_array($arr))
+    if(!is_array($arr) && !is_array($znak))
     {
         $this->queryError.="Error. Wrong parametre WHERE<br>";
         return $this;
@@ -162,6 +131,7 @@ class MyPdo
     else
     {
         $this->whereArr = $arr;
+				$this->znak = $znak;
     }
     return $this;
 }
@@ -249,15 +219,18 @@ class MyPdo
             {
                 foreach ($this->whereArr as $key => $val)
                 {
-                    $where = "WHERE $key > :$key";
+                    $where = "WHERE $key ".$this->znak[0]." :$key";
+
                 }
             }
             else
             {
+								$cnt=0;
                 $where .= "WHERE ";
                 foreach ($this->whereArr as $key => $val)
                 {
-                    $where .= "$key = :$key AND ";
+                    $where .= "$key ".$this->znak[$cnt]." :$key AND ";
+									$cnt++;
                 }
                 $where = substr($where, 0, -4);
             }

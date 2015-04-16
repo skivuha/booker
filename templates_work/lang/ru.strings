@@ -98,10 +98,10 @@
     </ISTRING>
     <ISTRING>
 	<KEY>SUNDAY</KEY>
-	<VALUE>Воскресенье</VALUE>
+	<VALUE></VALUE>
     </ISTRING>
     <ISTRING>
     <KEY>MONDAY</KEY>
-    <VALUE>Понедельник</VALUE>
+    <VALUE></VALUE>
     </ISTRING>
 </ISTRINGTABLE>

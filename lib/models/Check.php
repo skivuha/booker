@@ -95,7 +95,7 @@ class Check
 				$code_user = $this->valid->clearData($_COOKIE['code_employee']);
 				$arr = $this->myPdo->select('id_employee, mail_employee,
 				key_employee, name_employee')->table('employee')->where(array
-				('code_employee' => $code_user))->query()->commit();
+				('code_employee' => $code_user), array('='))->query()->commit();
 				if ( ! empty($arr))
 				{
 					$this->session->setSession('id_employee', $arr[0]['id_employee']);

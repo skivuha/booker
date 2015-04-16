@@ -135,15 +135,13 @@ class Calendar
 			{
 				if(!empty($value))
 				{
-
 						if ($this->saturday == $key2 || $this->sunday == $key2)
 						{
 							$data .= '<td style="color: red">' . $value . '<br>&nbsp;</td>';
 						}
-
 					else
 					{
-						$data .= '<td>' . $value . '<br>&nbsp;{{EVENT'.$value.'}}</td>';
+						$data .= '<td>' . $value . '<div>&nbsp;{{EVENT'.$value.'}}</div></td>';
 					}
 				}
 				else
@@ -173,8 +171,8 @@ class Calendar
 			.$this->newYear;
 		$this->calendar['CONTENT'] = $data;
 		$this->getAppointments();
-//		var_dump($this->calendar);
-//		die();
+		$this->getDataToBookIt();
+
 	return $this->calendar;
 	}
 
@@ -188,14 +186,35 @@ class Calendar
 		$myPdo = MyPdo::getInstance();
     $arr = $myPdo->select('*')
       ->table('appointments')
-      ->where(array('start'=> 1))
+      ->where(array('start' => $this->firstDayTimeStampChoiseMonth,
+										'end'=> $this->lastDayTimeStampChoiseMonth ),
+				array('>','<'))
       ->query()
       ->commit();
+
       foreach($arr as $key=>$val)
       {
-	 $this->calendar['EVENT'.date('d',$val['start'])].= '<br><a href="#" target="_blank">'.date('H', $val['start']).':'.date('i', $val['start']).'
+	 $this->calendar['EVENT'.(int)date('d',$val['start'])].= '<br><a href="/"
+	  class="event">'.date('H', $val['start']).':'.date('i', $val['start']).'
 	  - '.date('H', $val['end']).':'.date('i', $val['end']).'</a>';
 	}
+	}
+
+	private function getDataToBookIt()
+	{
+		$session = Session::getInstance();
+		$this->calendar['BOOKIT_USERNAME'] = $session->getSession('name_employee');
+		$leftDayInMonth = $this->countDayOfCurrentMonth - $this->currentDay;
+		//for($i = 0; $i <= 10; $i++)
+		//{
+			//$month = date('F', mktime(0, 0, 0, $this->currentMonth +$i,
+				//$this->currentDay, $this->currentYear));
+			//$year = date('Y',	mktime(0, 0, 0, $this->currentMonth,
+				//$this->currentDay, $this->currentYear +$i));
+			//$this->calendar['BOOKIT_H'] .= '<option>'.$month.'</option>';
+			//$this->calendar['BOOKIT_DAY'] .= '<option>'.$day.'</option>';
+			//$this->calendar['BOOKIT_YEAR'] .= '<option>'.$year.'</option>';
+		//}
 	}
 }
 ?>
