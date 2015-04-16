@@ -194,7 +194,7 @@ class Calendar
 
       foreach($arr as $key=>$val)
       {
-	 $this->calendar['EVENT'.(int)date('d',$val['start'])].= '<br><a href="/"
+	 $this->calendar['EVENT'.(int)date('d',$val['start'])].= '<br><a href="'.PATH.'"
 	  class="event">'.date('H', $val['start']).':'.date('i', $val['start']).'
 	  - '.date('H', $val['end']).':'.date('i', $val['end']).'</a>';
 	}
@@ -205,16 +205,6 @@ class Calendar
 		$session = Session::getInstance();
 		$this->calendar['BOOKIT_USERNAME'] = $session->getSession('name_employee');
 		$leftDayInMonth = $this->countDayOfCurrentMonth - $this->currentDay;
-		//for($i = 0; $i <= 10; $i++)
-		//{
-			//$month = date('F', mktime(0, 0, 0, $this->currentMonth +$i,
-				//$this->currentDay, $this->currentYear));
-			//$year = date('Y',	mktime(0, 0, 0, $this->currentMonth,
-				//$this->currentDay, $this->currentYear +$i));
-			//$this->calendar['BOOKIT_H'] .= '<option>'.$month.'</option>';
-			//$this->calendar['BOOKIT_DAY'] .= '<option>'.$day.'</option>';
-			//$this->calendar['BOOKIT_YEAR'] .= '<option>'.$year.'</option>';
-		//}
 	}
 }
 ?>

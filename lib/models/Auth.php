@@ -15,7 +15,6 @@ class Auth
 		$this->cookie = new Cookie();
 		$this->session = Session::getInstance();
 	}
-
 	public function logon($var)
 	{
 		if (true === $var)
@@ -38,7 +37,6 @@ class Auth
 					$pass = $data_post['password'];
 				}
 			}
-
 			if ('' === $data_post['name'])
 			{
 				$this->error['ERRORLOGIN'] = 'Field is empty';
@@ -56,7 +54,6 @@ class Auth
 					$name = $data_post['name'];
 				}
 			}
-
 			if (false !== $pass && false !== $name)
 			{
 				$arr = $this->myPdo->select('id_employee, mail_employee,
@@ -79,7 +76,6 @@ class Auth
 							$arr[0]['mail_employee']);
 						$this->session->setSession('name_employee',
 							$arr[0]['name_employee']);
-
 						if (isset($data_post['remember'])
 							&& 'on' === $data_post['remember'])
 						{
@@ -92,7 +88,6 @@ class Auth
 								->commit();
 							$this->cookie->add('code_employee', $code_employee);
 						}
-
 						return true;
 					}
 					else
@@ -102,7 +97,6 @@ class Auth
 				}
 			}
 		}
-
 		return $this->error;
 	}
 }

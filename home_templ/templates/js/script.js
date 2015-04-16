@@ -14,7 +14,7 @@ $(document).ready(
         var widht = (screen.width/2)-150;
         $('.event').bind('click', function () {
             var target = event.target || event.srcElement;
-            window.open('/~user2/PHP/booker/Employee/index/', 'Appointment', 'location, width = 300px,' +
+            window.open('/Employee/index/', 'Appointment', 'location, width = 300px,' +
             'height = 300px, top = '+height+'px, left = '+widht+'px').focus();
         });
 

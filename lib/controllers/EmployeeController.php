@@ -15,14 +15,20 @@ class EmployeeController extends Controller
 		$this->accessToCalendar();
 		$this->arrayLang();
 	}
+	
 	public function indexAction()
 	{
+	if(isset($_POST['submit']))
+	{
+	    $action = $this->valid->clearDataArr($_POST);
+	    $this->employee->setDataArray($action);
+	    //header('Location: '.PATH.'Employee/index/');
+	}
 		$this->view->addToReplace($this->langArr);
 		$this->listEmployee();
 		$this->arrayToPrint();
-
 	}
-
+	
 	public function deleteAction()
 	{
 		$params = $this->data->getParams();
@@ -36,19 +42,24 @@ class EmployeeController extends Controller
 			header('Location: '.PATH.'Employee/index/');
 		}
 	}
-
 	public function editAction()
 	{
 		$params = $this->data->getParams();
 		$params = $this->valid->clearDataArr($params);
-		if(isset($params['id']))
-		{
-			$this->employee->setFlag(true);
-		}
-			$employee = $this->employee->editEmployee();
-			$this->view->addToReplace($employee);
-			$this->listEmployee();
-			$this->arrayToPrint();
+	if(isset($params['id']))
+	    {
+		$this->employee->setFlag(true);
+	    }
+	if(isset($_POST['submit']))
+	    {
+		$action = $this->valid->clearDataArr($_POST);
+		$this->employee->setDataArray($action);
+		header('Location: '.PATH.'Employee/index/');
+	    }
+	    $employee = $this->employee->editEmployee();
+	    $this->view->addToReplace($employee);
+	    $this->listEmployee();
+	    $this->arrayToPrint();
 	}
 
 	private function arrayToPrint()

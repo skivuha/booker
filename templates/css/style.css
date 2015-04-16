@@ -21,8 +21,11 @@ textarea{
 }
 #employees{
     text-align: center;
+
+}
+#employees td{
+    height: 30px;
 }
 #formempl input{
     margin: 0 35px;
-;
 }

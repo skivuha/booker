@@ -96,5 +96,13 @@
         <KEY>HEAD_0</KEY>
         <VALUE>Sunday</VALUE>
     </ISTRING>
+    <ISTRING>
+	<KEY>SUNDAY</KEY>
+	<VALUE>Sunday</VALUE>
+    </ISTRING>
+    <ISTRING>
+	<KEY>MONDAY</KEY>
+	<VALUE>Monday</VALUE>
+    </ISTRING>
 </ISTRINGTABLE>
 

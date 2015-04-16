@@ -2,9 +2,27 @@ table{
     min-width: 770px !important;
 }
 table tr td{
-    min-width: 110px;
+    min-width: 120px;
     height: 110px;
 }
 table tr th{
     text-align: center;
+}
+td div{
+    overflow-y: auto;
+    height: 90px;
+}
+textarea{
+    resize: none;
+    overflow-y: auto;
+}
+#recurring{
+    display: none;
+}
+#employees{
+    text-align: center;
+}
+#formempl input{
+    margin: 0 35px;
+;
 }
