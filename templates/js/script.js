@@ -16,6 +16,17 @@ $(document).ready(
             var target = event.target || event.srcElement;
             window.open('/Employee/index/', 'Appointment', 'location, width = 300px,' +
             'height = 300px, top = '+height+'px, left = '+widht+'px').focus();
+        });
+
+        $('.deleteEmp').on('click', function(){
+            if(confirm('Are you sure you want to delete this contact?'))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         })
     }
 );

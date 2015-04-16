@@ -321,19 +321,19 @@ class MyPdo
         {
             if(trim($this->delete)!= '')
             {
-                $arr = 'Query OK. Data delete.';
+                $arr = true;
                 $this->defaultVar();
                 return $arr;
             }
             if(trim($this->update)!= '')
             {
-                $arr = 'Query OK. Data update.';
+                $arr = true;
                 $this->defaultVar();
                 return $arr;
             }
             if(trim($this->insert)!= '')
             {
-                $arr = 'Query OK. Data insert.';
+                $arr = true;
                 $this->defaultVar();
                 return $arr;
             }
