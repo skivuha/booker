@@ -57,6 +57,7 @@ class Employee
 		    }
 		    else
 		    {
+
 			if(false === $this->check->checkPass($this->dataArray['pass_employee']))
 			{
 			    $this->error['ERROR_PASS'] = 'Wrong data';
@@ -101,6 +102,7 @@ class Employee
 			    $email = $this->dataArray['email_employee'];
 			}
 		    }
+
 		    if(false !== $name && false !== $pass && false !== $email)
 		    {
 			$arr = $this->myPdo->select('name_employee, mail_employee')
@@ -108,9 +110,32 @@ class Employee
 			->where(array('name_employee'=>$name, 'mail_employee'=> $email), array('=','='))
 			->query()
 			->commit();
+          if(!empty($arr))
+          {
+            $this->error['ERROR_STATUS'] = 'E-mail or name already exists';
+          }
+          else
+          {
+            $encode = new Encode();
+            $key_employee = $encode->generateCode($name);
+            $pass = md5($key_employee.$pass.SALT);
+            $arr = $this->myPdo->insert()
+              ->table("employee SET name_employee = '$name',
+               passwd_employee = '$pass', mail_employee = '$email', key_employee = '$key_employee'")
+              ->query()
+              ->commit();
+            if($arr)
+            {
+              return true;
+            }
+          }
 		    }
 		}
 	    }
+    if(!empty($this->error))
+    {
+      return $this->error;
+    }
 	}
 	
 	public function editEmployee()

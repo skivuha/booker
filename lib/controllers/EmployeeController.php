@@ -22,8 +22,18 @@ class EmployeeController extends Controller
 	{
 	    $action = $this->valid->clearDataArr($_POST);
 	    $this->employee->setDataArray($action);
-	    //header('Location: '.PATH.'Employee/index/');
+      $this->employee->setFlag(false);
+      $employee = $this->employee->addEmployee();
+    if(true === $employee)
+    {
+      header('Location: ' . PATH . 'Employee/index/');
+    }
+    else
+    {
+      $this->view->addToReplace($employee);
+    }
 	}
+
 		$this->view->addToReplace($this->langArr);
 		$this->listEmployee();
 		$this->arrayToPrint();
