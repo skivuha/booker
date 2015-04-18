@@ -3,7 +3,7 @@ table{
     max-width: 1280px !important;
 }
 table tr td{
-    min-width: 170px;
+    min-width: 163px;
     height: 110px;
 }
 table tr th{

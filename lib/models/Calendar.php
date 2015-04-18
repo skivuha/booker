@@ -22,6 +22,8 @@ class Calendar
 	private $lastDayTimeStampChoiseMonth;
 	private $currentDayTimeStamp;
 	private $timeFormat;
+	private $room;
+	private $userRole;
 
 	public function setFirstDay($var)
 	{
@@ -33,6 +35,11 @@ class Calendar
 		$this->currentDay = date('d');
 		$this->currentMonth = date('n');
 		$this->currentYear = date('Y');
+	}
+
+	public function setUserRole($var)
+	{
+		$this->userRole = $var;
 	}
 
 	private function getNewData()
@@ -153,6 +160,8 @@ class Calendar
 			$data.= '</tr>';
 		}
 		$this->getCurrentData();
+
+
 		if(true === $this->disable)
 		{
 			$this->calendar['FIRSTDAY'] = 'sunday';
@@ -176,6 +185,15 @@ class Calendar
 			$this->calendar['TIMEFORMAT'] = '24h';
 			$this->calendar['TIMEFORMATB'] = '%LANG_24H%';
 		}
+		$session = Session::getInstance();
+		$this->room = $session->getSession('room');
+
+		if(false === $this->userRole)
+		{
+			$this->calendar['ADMIN'] = 'disabled';
+		}
+
+
 
 		$this->calendar['HEADCALENDAR'] = $head;
 		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
@@ -185,6 +203,9 @@ class Calendar
 		$this->calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
 			.$this->newYear;
 		$this->calendar['CONTENT'] = $data;
+		$this->calendar['NAME_EMPL']= $session->getSession('name_employee');
+		$this->calendar['ROOM'] = $this->room;
+
 		$this->getAppointments();
 		$this->getDataToBookIt();
 
@@ -207,8 +228,9 @@ class Calendar
     $arr = $myPdo->select('*')
       ->table('appointments')
       ->where(array('start' => $this->firstDayTimeStampChoiseMonth,
-										'end'=> $this->lastDayTimeStampChoiseMonth ),
-				array('>','<'))
+										'end'=> $this->lastDayTimeStampChoiseMonth,
+										'id_room'=> $this->room),
+				array('>','<','='))
       ->query()
       ->commit();
 

@@ -11,6 +11,7 @@ class CalendarController extends Controller
 	public function indexAction()
 	{
 		$cal = new Calendar();
+		$cal->setUserRole($this->userRole);
 		$cal->setFirstDay($this->getFirstDay());
 		$cal->setTimeFormat($this->getTimeFormat());
 		$b = $cal->printCalendar();

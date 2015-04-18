@@ -7,10 +7,13 @@ class Check
 	private $session;
 	private $myPdo;
 	private $redirect;
+	private $data;
+	private $statusUser;
 
 	public function __construct()
 	{
 		$this->valid = new Validator();
+		$this->data = Router::getInstance();
 		$this->cookie = new Cookie();
 		$this->session = Session::getInstance();
 		$this->myPdo = MyPdo::getInstance();
@@ -18,6 +21,7 @@ class Check
 		$this->choiseLang();
 		$this->setFirstDay();
 		$this->setTimeFormat();
+		$this->setRoom();
 	}
 
 	private function lang()
@@ -46,27 +50,44 @@ class Check
 
 	private function setTimeFormat()
 	{
-		$this->redirect();
-		$post_clear = $this->valid->clearDataArr($_POST);
-		if ('12h' === $post_clear['timeFormat'])
+		if(!isset($_COOKIE['langanator']))
 		{
-			$this->cookie->add('user2_timeFormat', '12h');
-			header('Location:' .$this->redirect);
+			$this->cookie->add('user2_timeFormat','24h');
 		}
-		elseif('24h' === $post_clear['timeFormat'])
+		else
 		{
-			$this->cookie->add('user2_timeFormat', '24h');
-			header('Location:' .$this->redirect);
+			$this->redirect();
+			$post_clear = $this->valid->clearDataArr($_POST);
+			if ('12h' === $post_clear['timeFormat'])
+			{
+				$this->cookie->add('user2_timeFormat', '12h');
+				header('Location:' . $this->redirect);
+			}
+			elseif ('24h' === $post_clear['timeFormat'])
+			{
+				$this->cookie->add('user2_timeFormat', '24h');
+				header('Location:' . $this->redirect);
+			}
 		}
 	}
 	
 	private function setRoom()
 	{
-	    $this->redirect();
-	    $post_clear = $this->valid->clearDataArr($_POST);
-	    $post_room = abs((int)$_POST[selectedroom]);
-	    $this->cookie->add('user2_room', '$post_room');
-	    header('Location:' .$this->redirect);
+	  if(!isset($_SESSION['room']))
+		{
+			$this->session->setSession('room','1');
+		}
+		else
+		{
+			$this->redirect();
+			$params = $this->data->getParams();
+			if(isset($params['room']))
+			{
+				$params = abs((int)$params['room']);
+				$this->session->setSession('room', $params);
+				header('Location:' .$this->redirect);
+			}
+		}
 	}
 
 	private function choiseLang()
@@ -111,15 +132,15 @@ class Check
 			{
 				$code_user = $this->valid->clearData($_COOKIE['code_employee']);
 				$arr = $this->myPdo->select('id_employee, mail_employee,
-				key_employee, name_employee')->table('employee')->where(array
+				key_employee, name_employee, role')->table('employee')->where(array
 				('code_employee' => $code_user), array('='))->query()->commit();
 				if ( ! empty($arr))
 				{
 					$this->session->setSession('id_employee', $arr[0]['id_employee']);
 					$this->session->setSession('mail_employee', $arr[0]['mail_employee']);
 					$this->session->setSession('name_employee', $arr[0]['name_employee']);
+					$this->session->setSession('role', $arr[0]['role']);
 					$this->cookie->add("code_employee", $code_user);
-					return true;
 				}
 				else
 				{

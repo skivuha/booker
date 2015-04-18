@@ -11,6 +11,7 @@ abstract class Controller
 	protected $cookie;
 	protected $userAuth;
 	protected $langArr;
+	protected $userRole;
 
 	public function __construct()
 	{
@@ -39,6 +40,8 @@ abstract class Controller
 		return $this->userAuth = $this->check->getUserStatus();
 	}
 
+
+
 	protected function arrayLang()
 	{
 		$this->cookie = new Cookie();
@@ -51,6 +54,16 @@ abstract class Controller
 	protected function accessToCalendar()
 	{
 		$this->check = new Check();
+		$session = Session::getInstance();
+		$role = $session->getSession('role');
+		if(1 == $role)
+		{
+			$this->userRole = true;
+		}
+		else
+		{
+			$this->userRole = false;
+		}
 		if(false === $this->check->getUserStatus())
 		{
 			header('Location: '.PATH.'Home/index', true, 303);

@@ -1,4 +1,14 @@
-<p><a>Boardroom1</a> | <a>Boardroom2</a> | <a>Boardroom3</a></p>
+<div class="row well">
+<div class="col-xs-4">
+    <span>Welcome, {{NAME_EMPL}}.</span>
+    BOARDROOM #{{ROOM}} selected.
+    </div>
+    <div class="col-xs-4">
+    <a href="/Calendar/index/room/1">Boardroom1</a> |
+    <a href="/Calendar/index/room/2">Boardroom2</a> |
+    <a href="/Calendar/index/room/3">Boardroom3</a>
+    </div>
+</div>
 <div class="row">
     <div class="col-xs-10">
         {{CONTENT}}
@@ -96,7 +106,8 @@
             </div>
         </div>
         <div class="row">
-            <a href="/Employee/index/" class="btn btn-default btn-sm">
+            <a href="/Employee/index/" class="btn btn-default btn-sm"
+            {{ADMIN}}>
                 Employee List
             </a>
         </div>
