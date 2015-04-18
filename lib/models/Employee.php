@@ -6,12 +6,14 @@ class Employee
 	private $dataArray;
 	private $error;
 	private $check;
+	private $encode;
 
 	public function __construct()
 	{
 		$this->myPdo = MyPdo::getInstance();
 		$this->data = Router::getInstance();
 		$this->check = new Validator();
+		$this->encode = new Encode();
 	}
 
 	public function getEmployee()
@@ -116,8 +118,8 @@ class Employee
           }
           else
           {
-            $encode = new Encode();
-            $key_employee = $encode->generateCode($name);
+
+            $key_employee = $this->encode->generateCode($name);
             $pass = md5($key_employee.$pass.SALT);
             $arr = $this->myPdo->insert()
               ->table("employee SET name_employee = '$name',
@@ -144,11 +146,29 @@ class Employee
 		{
 		if (isset($this->dataArray))
 		{
-		    $name = $this->dataArray['name_employee'];
-		    $email = $this->dataArray['email_employee'];
-		    $id_employee = abs((int)$this->data->getParams());
+			$array = array();
+		  $name = $this->dataArray['name_employee'];
+		  $email = $this->dataArray['email_employee'];
+			$pass = $this->dataArray['pass_employee'];
+			$key_employee = $this->encode->generateCode($name);
+			if(0 != strlen($name))
+			{
+				$array['name_employee'] = $name;
+			}
+			if(0 != strlen($email))
+			{
+				$array['mail_employee'] = $email;
+			}
+			if(0 != strlen($pass))
+			{
+				$array['passwd_employee'] = md5($key_employee.$pass.SALT);
+				$array['key_employee'] = $key_employee;
+			}
+			$id_employee = $this->data->getParams();
+			$id_employee = abs((int)$id_employee['id']);
 		    $rez = $this->myPdo->update()
-		    ->table("employee SET name_employee = '$name', mail_employee = '$email' ")
+		    ->table("employee")
+				->set($array)
 		    ->where(array('id_employee'=>$id_employee), array('='))
 		    ->query()
 		    ->commit();

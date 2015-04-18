@@ -26,7 +26,7 @@ class EmployeeController extends Controller
       $employee = $this->employee->addEmployee();
     if(true === $employee)
     {
-      header('Location: ' . PATH . 'Employee/index/');
+      header('Location: ' . PATH . 'Employee/index/', true, 303);
     }
     else
     {
@@ -49,7 +49,7 @@ class EmployeeController extends Controller
 		}
 		if(true === $this->employee->deleteEmployee())
 		{
-			header('Location: '.PATH.'Employee/index/');
+			header('Location: '.PATH.'Employee/index/', true, 303);
 		}
 	}
 	public function editAction()
@@ -64,7 +64,7 @@ class EmployeeController extends Controller
 	    {
 		$action = $this->valid->clearDataArr($_POST);
 		$this->employee->setDataArray($action);
-		header('Location: '.PATH.'Employee/index/');
+		header('Location: '.PATH.'Employee/index/', true, 303);
 	    }
 	    $employee = $this->employee->editEmployee();
 	    $this->view->addToReplace($employee);
@@ -86,7 +86,8 @@ class EmployeeController extends Controller
 		foreach($employees as $key => $val)
 		{
 			$arr = array('CNT'=>$cnt,'EMPLOYEE_NAME'=>$val['name_employee'],
-									 'EMPLOYEE_ID'=>$val['id_employee']);
+									 'EMPLOYEE_ID'=>$val['id_employee'],
+									 'EMPLOYEE_MAIL'=>$val['mail_employee']);
 			$cnt++;
 			$this->view->addToReplace($arr);
 			$this->arrRender['LISTEMPLOYEES'] .= $this->view->setTemplateFile

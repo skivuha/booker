@@ -47,7 +47,7 @@ abstract class Controller
 		$this->check = new Check();
 		if(false === $this->check->getUserStatus())
 		{
-			header('Location: '.PATH.'Home/index');
+			header('Location: '.PATH.'Home/index', true, 303);
 		}
 	}
 }

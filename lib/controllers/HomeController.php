@@ -16,7 +16,7 @@ class HomeController extends Controller
 		$resultAuth = $auth->logon($signin);
 		if (true === $resultAuth || true === $this->userAuth)
 		{
-			header('Location: '.PATH.'Calendar/index');
+			header('Location: '.PATH.'Calendar/index', true, 303);
 		}
 		else
 		{

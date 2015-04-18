@@ -22,6 +22,7 @@ class MyPdo
     protected $limit_end;
     protected $join;
     public $lastId;
+		protected $set;
 
     private function __construct()
     {
@@ -163,20 +164,18 @@ class MyPdo
     *@param old: takes before assignment.
     *@param new: takes after assignment.
     */
-    public function set($old, $new)
+    public function set($arr)
     {
-        if(trim($old)=='' || trim($new)=='')
-        {
-            $this->queryError.="Error. Wrong parametre SET<br>";
-            return $this;
-        }
-        else
-        {
-            $old=$this->protect($old);
-            $this->old=$old;
-            $this->new=$new;
-        }
-        return $this;
+			if(!is_array($arr))
+			{
+				$this->queryError.="Error. Wrong parametre SET<br>";
+				return $this;
+			}
+			else
+			{
+				$this->set = $arr;
+			}
+			return $this;
     }
 
     /*
@@ -209,10 +208,26 @@ class MyPdo
         $set='';
         $limit = '';
 
-        if(strlen($this->old)!=0)
-        {
-            $set="SET $this->old = :set";
-        }
+			if(count($this->set)!=0)
+			{
+				if(count($this->set) === 1)
+				{
+					foreach ($this->set as $key => $val)
+					{
+						$set = "SET $key = :$key";
+					}
+				}
+				else
+				{
+					$set .= "SET ";
+					foreach ($this->set as $key => $val)
+					{
+						$set .= "$key = :$key, ";
+					}
+					$set = substr($set, 0, -2);
+				}
+			}
+
         if(count($this->whereArr)!=0)
         {
             if(count($this->whereArr) === 1)
@@ -286,14 +301,19 @@ class MyPdo
         {
             $stmt=$this->db->prepare($this->query);
         }
-        if(!empty($this->old))
-        {
-            $stmt->bindParam(':set',$this->new);
-        }
-        if(!empty($this->where))
-        {
-            $stmt->bindParam(':where',$this->where);
-        }
+
+			if(!empty($this->set))
+			{
+				foreach($this->set as $key=>$val)
+				{
+					$stmt->bindValue(':'.$key,$val,PDO::PARAM_STR);
+				}
+			}
+
+       // if(!empty($this->where))
+        //{
+         //   $stmt->bindParam(':where',$this->where);
+        //}
         if(!empty($this->whereArr))
         {
             foreach($this->whereArr as $key=>$val)
@@ -363,6 +383,7 @@ class MyPdo
         $this->query='';
         $this->limit_start='';
         $this->limit_end='';
+				unset($this->set);
     }
 }
 ?>
