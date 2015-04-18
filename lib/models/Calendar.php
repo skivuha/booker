@@ -21,6 +21,7 @@ class Calendar
 	private $firstDayTimeStampChoiseMonth;
 	private $lastDayTimeStampChoiseMonth;
 	private $currentDayTimeStamp;
+	private $timeFormat;
 
 	public function setFirstDay($var)
 	{
@@ -162,6 +163,20 @@ class Calendar
 			$this->calendar['FIRSTDAY'] = 'monday';
 			$this->calendar['FIRSTDAYB'] = '%LANG_MONDAY%';
 		}
+
+		if('24h' == $this->timeFormat)
+		{
+			$this->timeFormat = false;
+			$this->calendar['TIMEFORMAT'] = '12h';
+			$this->calendar['TIMEFORMATB'] = '%LANG_12H%';
+		}
+		else
+		{
+			$this->timeFormat = true;
+			$this->calendar['TIMEFORMAT'] = '24h';
+			$this->calendar['TIMEFORMATB'] = '%LANG_24H%';
+		}
+
 		$this->calendar['HEADCALENDAR'] = $head;
 		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
 			.$this->subMonth;
@@ -181,6 +196,11 @@ class Calendar
 		$this->flagParams = $var;
 	}
 
+	public function setTimeFormat($var)
+	{
+		$this->timeFormat = $var;
+	}
+
 	private function getAppointments()
 	{
 		$myPdo = MyPdo::getInstance();
@@ -192,11 +212,40 @@ class Calendar
       ->query()
       ->commit();
 
+
       foreach($arr as $key=>$val)
       {
-	 $this->calendar['EVENT'.(int)date('d',$val['start'])].= '<br><a href="'.PATH.'"
-	  class="event">'.date('H', $val['start']).':'.date('i', $val['start']).'
-	  - '.date('H', $val['end']).':'.date('i', $val['end']).'</a>';
+		$day = (int)date('d',$val['start']);
+				$timeForm = 12;
+		$startTime = 	date('H', $val['start']).':'.date('i', $val['start']);
+				$startTimeFormat = 	date('h', $val['start']).':'.date('i',
+						$val['start']);
+		$endTime = date('H', $val['end']).':'.date('i', $val['end']);
+				$endTimeFormat = date('h', $val['end']).':'.date('i', $val['end']);
+				if(true === $this->timeFormat)
+				{
+					if($timeForm > $startTime)
+					{
+						$startTime = $startTime.'AM';
+					}
+					if($timeForm > $endTime)
+					{
+						$endTime = $endTime.'AM';
+					}
+					if($timeForm <= $startTime)
+					{
+						$startTime = $startTimeFormat.'PM';
+					}
+					if($timeForm <= $endTime)
+					{
+						$endTime = $endTimeFormat.'PM';
+					}
+				}
+
+
+
+	 $this->calendar['EVENT'.$day].= '<br><a href="'.PATH.'"
+	  class="event">'.$startTime.' - '.$endTime.'</a>';
 	}
 	}
 

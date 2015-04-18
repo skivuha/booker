@@ -28,6 +28,12 @@ abstract class Controller
 		return $this->cookie->read('user2_firstday');
 	}
 
+	protected function getTimeFormat()
+	{
+		$this->cookie = new Cookie();
+		return $this->cookie->read('user2_timeFormat');
+	}
+
 	private function checkUser()
 	{
 		return $this->userAuth = $this->check->getUserStatus();

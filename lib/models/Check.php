@@ -17,6 +17,7 @@ class Check
 		$this->lang();
 		$this->choiseLang();
 		$this->setFirstDay();
+		$this->setTimeFormat();
 	}
 
 	private function lang()
@@ -39,6 +40,22 @@ class Check
 		elseif('monday' === $post_clear['firstday'])
 		{
 			$this->cookie->add('user2_firstday', 'monday');
+			header('Location:' .$this->redirect);
+		}
+	}
+
+	private function setTimeFormat()
+	{
+		$this->redirect();
+		$post_clear = $this->valid->clearDataArr($_POST);
+		if ('12h' === $post_clear['timeFormat'])
+		{
+			$this->cookie->add('user2_timeFormat', '12h');
+			header('Location:' .$this->redirect);
+		}
+		elseif('24h' === $post_clear['timeFormat'])
+		{
+			$this->cookie->add('user2_timeFormat', '24h');
 			header('Location:' .$this->redirect);
 		}
 	}

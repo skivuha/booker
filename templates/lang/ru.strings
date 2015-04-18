@@ -104,4 +104,12 @@
     <KEY>MONDAY</KEY>
     <VALUE>Понедельник</VALUE>
     </ISTRING>
+    <ISTRING>
+	    <KEY>12H</KEY>
+	    <VALUE>12 часов</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>24H</KEY>
+	    <VALUE>24 часа</VALUE>
+    </ISTRING>
 </ISTRINGTABLE>

@@ -25,23 +25,32 @@
                             <p><select><option>{{BOOKIT_USERNAME}}</option></select></p>
                             <p>2. I would like to book this meeting</p>
                             <p>
-                                <select>{{BOOKIT_MONTH}}</select>
-                                <select>{{BOOKIT_DAY}}</select>
-                                <select>{{BOOKIT_YEAR}}</select>
+                                <select id="dropdownmonth">{{BOOKIT_MONTH
+                                    }}</select>
+                                <select id="dropdownday">{{BOOKIT_DAY
+                                    }}</select>
+                                <select id="dropdownyear">{{BOOKIT_YEAR
+                                    }}</select>
                             </p>
                             <p>3. Specify what the time and end of the
                                 meeting (This will be what people see on
                                 the calendar.)
                             </p>
                                 <p>
-                                    <select><option>{{BOOKIT_H}}</option></select>
-                                    <select><option>{{BOOKIT_M}}</option></select>
-                                    <select><option>{{BOOKIT_AMPM}}</option></select>
+                                    <select id="dropdownhourstart"></select>
+                                    <select><option>00</option>
+                                        <option>30</option></select>
+                                    <select id="dropdowntypestart">
+                                        <option>AM</option>
+                                        <option>PM</option></select>
                                 </p>
                             <p>
-                                <select><option>{{BOOKIT_H}}</option></select>
-                                <select><option>{{BOOKIT_M}}</option></select>
-                                <select><option>{{BOOKIT_AMPM}}</option></select>
+                                <select id="dropdownhourend"></select>
+                                <select><option>00</option>
+                                    <option>30</option></select>
+                                <select id="dropdowntypeend">
+                                    <option>AM</option>
+                                    <option>PM</option></select>
                             </p>
                             <p>4. Enter the specifics for the meeting.
                                 (This will be what people see when they
@@ -58,12 +67,12 @@
                                 6. If it is recurring, specify weekly,
                                 bi-weekly or monthly.
                             </p>
-                            <input type="radio" name="recuring"
-                                      value=""/>weekly<br>
-                            <input type="radio" name="recuring"
-                                      value="no"/>bi-weekly<br>
-                            <input type="radio" name="recuring"
-                                      value="no"/>monthly
+                            <input id="weekly" type="radio" name="recuring"
+                                      value="weekly" checked/>weekly<br>
+                            <input id="bi-weekly" type="radio" name="recuring"
+                                      value="bi-weekly"/>bi-weekly<br>
+                            <input id="monthly" type="radio" name="recuring"
+                                      value="monthly"/>monthly
                             <p><br>
                                 If weekly or bi-weekly, specify the number
                                 of weeks for it to keep recurring. If
@@ -72,8 +81,8 @@
                                 number of weeks, the computer will round
                                 down.)
                             </p>
-                            <p><input type="number" min="1"
-                                      max="4">duration(max 4
+                            <p><input id="duration" type="number" min="1"
+                                      max="4" value="1">duration(max 4
                                 weeks)</p>
                                     </div>
                                 </form>

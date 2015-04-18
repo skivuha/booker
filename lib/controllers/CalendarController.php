@@ -12,6 +12,7 @@ class CalendarController extends Controller
 	{
 		$cal = new Calendar();
 		$cal->setFirstDay($this->getFirstDay());
+		$cal->setTimeFormat($this->getTimeFormat());
 		$b = $cal->printCalendar();
 		$view = new View;
 		$view->addToReplace($b);
@@ -26,6 +27,7 @@ class CalendarController extends Controller
 	{
 		$cal = new Calendar();
 		$cal->setFirstDay($this->getFirstDay());
+		$cal->setTimeFormat($this->getTimeFormat());
 		$getParam = false;
 		$data = Router::getInstance();
 		$params = $data->getParams();

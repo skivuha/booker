@@ -97,12 +97,20 @@
         <VALUE>Sunday</VALUE>
     </ISTRING>
     <ISTRING>
-	<KEY>SUNDAY</KEY>
-	<VALUE>Sunday</VALUE>
+	    <KEY>SUNDAY</KEY>
+	    <VALUE>Sunday</VALUE>
     </ISTRING>
     <ISTRING>
-	<KEY>MONDAY</KEY>
-	<VALUE>Monday</VALUE>
+	    <KEY>MONDAY</KEY>
+	    <VALUE>Monday</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>12H</KEY>
+	    <VALUE>12 hour</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>24H</KEY>
+	    <VALUE>24 hour</VALUE>
     </ISTRING>
 </ISTRINGTABLE>
 
