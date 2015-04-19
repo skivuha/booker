@@ -13,6 +13,7 @@ class EmployeeController extends Controller
 		$this->view = new View;
 		$this->valid = new Validator();
 		$this->accessToCalendar();
+		$this->accessToEmployee();
 		$this->arrayLang();
 	}
 	

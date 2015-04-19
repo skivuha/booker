@@ -94,8 +94,10 @@ $(document).ready(
 
         var hourFormat = getCookie('user2_timeFormat');
         var listHour = '';
-        setValueStartHour();
-        setValueEndHour();
+        if('12h' == hourFormat) {
+            setValueStartHour();
+            setValueEndHour();
+        }
         if('24h' == hourFormat)
         {
             for(var i = 0; i <= 23; i++)
@@ -124,7 +126,10 @@ $(document).ready(
             }
         }
         $('#dropdownhourstart, #dropdownhourend').html(listHour);
-        setMaxDuration()
+        setMaxDuration();
+        $('#savemodal').on('click', function(){
+            addEvent();
+        });
     }
 );
 
@@ -159,29 +164,83 @@ function setSelectedData()
         }
 
         $('#dropdownday').html(listDay);
-        $('option[value="'+selectedDay+'"]').attr('selected','selected');
+        $('#dropdownday option[value="'+selectedDay+'"]').attr('selected','selected');
     });
 }
 
 function setValueStartHour()
 {
-    $('#dropdowntypestart').on('click', function() {
+    $('#dropdowntypestart, #dropdownhourstart').on('click', function() {
+        var value = $('#dropdownhourstart :selected').attr('value');
         var start = $('#dropdowntypestart :selected').text();
-
+        var hourStart = $('#dropdownhourstart :selected').attr('value');
+        var pm = 12;
         if('PM' == start)
-        {   var pm = 12;
+        {
+            $('#dropdownhourstart option:contains(00)').attr('disabled','disabled');
+            if('00' == hourStart)
+            {
+                $('#dropdownhourstart option:contains(01)').attr('selected','selected')
+            }
             var selectedHour = parseInt($('#dropdownhourstart :selected').text()) + pm;
+            if(24 == selectedHour)
+            {
+                selectedHour = '12';
+            }
+
             $('#dropdownhourstart :selected').attr('value', selectedHour);
+            $('#dropdownhourstart option:contains(12)').removeAttr('disabled');
+        }
+        if('AM' == start)
+        {
+            if( 12 <= value )
+            {
+                var selectedHour = parseInt(hourStart) - pm;
+            }
+            $('#dropdownhourstart :selected').attr('value', selectedHour);
+            $('#dropdownhourstart option[value="00"]').removeAttr('disabled');
+            $('#dropdownhourstart option:contains(12)').attr('disabled','disabled');
+            if('12' == hourStart)
+            {
+                $('#dropdownhourstart option:contains(11)').attr('selected','selected')
+            }
         }
     })
 }
 function setValueEndHour() {
-    $('#dropdowntypeend').on('click', function() {
+    $('#dropdowntypeend, #dropdownhourend').on('click', function() {
         var end = $('#dropdowntypeend :selected').text();
+        var hourEnd = $('#dropdownhourend :selected').attr('value');
+        var value = $('#dropdownhourend :selected').attr('value');
+        var pm = 12;
         if ('PM' == end) {
-            var pm = 12;
+
+            $('#dropdownhourend option:contains(00)').attr('disabled','disabled');
+            if('00' == hourEnd)
+            {
+                $('#dropdownhourend option:contains(01)').attr('selected','selected')
+            }
             var selectedHour = parseInt($('#dropdownhourend :selected').text()) + pm;
+            if(24 == selectedHour)
+            {
+                selectedHour = '12';
+            }
             $('#dropdownhourend :selected').attr('value', selectedHour);
+            $('#dropdownhourend option:contains(12)').removeAttr('disabled');
+        }
+        if('AM' == end)
+        {
+            if( 12 <= value )
+            {
+                var selectedHour = parseInt(hourEnd) - pm;
+            }
+            $('#dropdownhourend :selected').attr('value', selectedHour);
+            $('#dropdownhourend option[value="00"]').removeAttr('disabled');
+            $('#dropdownhourend option:contains(12)').attr('disabled','disabled');
+            if('12' == hourEnd)
+            {
+                $('#dropdownhourend option:contains(11)').attr('selected','selected')
+            }
         }
     })
 }
@@ -204,4 +263,16 @@ function getCookie(name) {
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+function addEvent() {
+    $.ajax({
+        url: '/Event/add/',
+        method: 'POST',
+        data: $("#modal").serialize()
+    }).then(function(data){
+        console.log(data);
+        if(data == true) {
+            $('#myModal').modal('hide');
+        }
+    })
 }

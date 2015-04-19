@@ -188,10 +188,10 @@ class Calendar
 		$session = Session::getInstance();
 		$this->room = $session->getSession('room');
 
-		if(false === $this->userRole)
-		{
-			$this->calendar['ADMIN'] = 'disabled';
-		}
+		//if(false === $this->userRole)
+		//{
+		//	$this->calendar['ADMIN'] = 'disabled';
+		//}
 
 
 
@@ -275,6 +275,7 @@ class Calendar
 	{
 		$session = Session::getInstance();
 		$this->calendar['BOOKIT_USERNAME'] = $session->getSession('name_employee');
+		$this->calendar['BOOKIT_ID'] = $session->getSession('id_employee');
 		$leftDayInMonth = $this->countDayOfCurrentMonth - $this->currentDay;
 	}
 }

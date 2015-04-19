@@ -16,6 +16,11 @@ class CalendarController extends Controller
 		$cal->setTimeFormat($this->getTimeFormat());
 		$b = $cal->printCalendar();
 		$view = new View;
+		if(true === $this->userRole)
+		{
+			$b['ADMIN'] = $view->setTemplateFile('employee')->renderFile();
+		}
+
 		$view->addToReplace($b);
 		$view->addToReplace($this->langArr);
 

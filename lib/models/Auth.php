@@ -57,7 +57,7 @@ class Auth
 			if (false !== $pass && false !== $name)
 			{
 				$arr = $this->myPdo->select('id_employee, mail_employee,
-				 passwd_employee, key_employee, name_employee')
+				 passwd_employee, key_employee, name_employee, role')
 					->table('employee')
 					->where(array('name_employee' => $name), array('='))
 					->query()
@@ -76,6 +76,8 @@ class Auth
 							$arr[0]['mail_employee']);
 						$this->session->setSession('name_employee',
 							$arr[0]['name_employee']);
+						$this->session->setSession('role',
+							md5($arr[0]['role']));
 						if (isset($data_post['remember'])
 							&& 'on' === $data_post['remember'])
 						{

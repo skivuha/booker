@@ -122,7 +122,8 @@ class Check
 	{
 		if (isset($_SESSION['id_employee'])
 			&& isset($_SESSION['name_employee'])
-			&& isset($_SESSION['mail_employee']))
+			&& isset($_SESSION['mail_employee'])
+			&& isset($_SESSION['role']))
 		{
 			return true;
 		}
@@ -139,7 +140,7 @@ class Check
 					$this->session->setSession('id_employee', $arr[0]['id_employee']);
 					$this->session->setSession('mail_employee', $arr[0]['mail_employee']);
 					$this->session->setSession('name_employee', $arr[0]['name_employee']);
-					$this->session->setSession('role', $arr[0]['role']);
+					$this->session->setSession('role', md5($arr[0]['role']));
 					$this->cookie->add("code_employee", $code_user);
 				}
 				else
