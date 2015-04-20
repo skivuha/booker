@@ -264,7 +264,8 @@ class Calendar
 					}
 				}
 
-	 $this->calendar['EVENT'.$day].= '<br><a href="'.PATH.'"
+	 $this->calendar['EVENT'.$day].= '<br><a href="" name="'
+		 .$val['id_appointment'].'"
 	  class="event">'.$startTime.' - '.$endTime.'</a>';
 		}
 	}

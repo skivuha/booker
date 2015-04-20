@@ -18,8 +18,9 @@ $(document).ready(
         var widht = (screen.width/2)-150;
         $('.event').bind('click', function () {
             var target = event.target || event.srcElement;
-            window.open('/~user2/PHP/booker/Employee/index/', 'Appointment', 'location, width = 300px,' +
-            'height = 300px, top = '+height+'px, left = '+widht+'px').focus();
+            var id = $(this).attr('name');
+            window.open('/Event/edit/id/'+id, 'Appointment', 'location = no, width = 350px,' +
+            'height = 415px, top = '+height+'px, left = '+widht+'px ').focus();
         });
 
         $('.deleteEmp').on('click', function(){
@@ -133,6 +134,12 @@ $(document).ready(
         setMaxDuration();
         $('#savemodal').on('click', function(){
             addEvent();
+        });
+        $('#deletebuttn').on('click', function(){
+            deleteEvent();
+        });
+        $('#updatebuttn').on('click', function(){
+            updateEvent();
         });
     }
 );
@@ -278,11 +285,55 @@ function addEvent() {
         var objJ = JSON.parse(data);
         if(objJ[0] == true) {
             $('#myModal').modal('hide');
+            setTimeout('window.location.href="/Calendar/index"',500);
         }
         else
         {
             $('#wrongdata').attr('class','bg-danger');
             $('#wrongdataerror').html(objJ['ERROR_DATA']).css('color','red');
         }
+    })
+}
+
+function deleteEvent()
+{
+    $.ajax({
+        url: '/Event/edit/',
+        method: 'POST',
+        data: $("#details").serialize()
+    }).then(function(data){
+        window.onunload = function(){
+            if (window.opener){
+                window.opener.location.href = window.opener.location.href;
+            }
+        };
+        window.close();
+    })
+}
+
+function updateEvent()
+{
+    $.ajax({
+        url: '/Event/edit/',
+        method: 'POST',
+        data: $("#details").serialize()
+    }).then(function(data){
+        var objJ = JSON.parse(data);
+       /* console.log(objJ);
+        if(objJ[0] == true) {
+            window.onunload = function(){
+                if (window.opener){
+                    window.opener.location.href = window.opener.location.href;
+                }
+            };
+            window.close();
+        }
+        else
+        {
+            $('#warningupdate').html(objJ['ERROR_DATA']);
+        }
+
+*/
+
     })
 }

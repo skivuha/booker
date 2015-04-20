@@ -40,3 +40,24 @@ textarea{
     font-weight: bold;
     margin-left: 70px;
 }
+#secondWindowH2{
+    text-align: center;
+    background-color: #e3e3e3;
+}
+#timeinterval{
+    margin-left: 35px;
+}
+#notesdetails{
+    vertical-align: top;
+}
+#start{
+    display: none;
+}
+#employ{
+    display: none;
+}
+
+#warningupdate{
+    color: red;
+    font-weight: bold;
+}

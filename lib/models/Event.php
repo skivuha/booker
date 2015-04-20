@@ -4,6 +4,10 @@ class Event
 	private $data;
 	private $error;
 	private $id;
+	private $dArray;
+	private $userRole;
+	private $recurent;
+
 
 	public function checkDateNoRecursion()
 	{
@@ -141,14 +145,37 @@ class Event
 			for($i = 0; $i <= $duration; $i++)
 			{
 				$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
-					$selectedMonth + 1*$i, $selectedDay + $interval*$i, $selectedYear);
+					$selectedMonth + $period*$i, $selectedDay + $interval*$i, $selectedYear);
 				$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
-					$selectedMonth + 1*$i, $selectedDay + $interval*$i,
+					$selectedMonth + $period*$i, $selectedDay + $interval*$i,
 					$selectedYear);
 				$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
 					$selectedDay + $interval*$i, $selectedYear);
 				$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
 					$selectedDay + $interval*$i, $selectedYear);
+
+				if(6 == date('w', $startTime[$i]))
+				{
+					$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
+						$selectedMonth + $period*$i, $selectedDay + 2, $selectedYear);
+					$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
+						$selectedMonth + $period*$i, $selectedDay + 2, $selectedYear);
+					$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
+						$selectedDay + 2, $selectedYear);
+					$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
+						$selectedDay + 2, $selectedYear);
+				}elseif(0 == date('w', $startTime[$i]))
+				{
+					$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
+						$selectedMonth + 1*$i, $selectedDay + 1, $selectedYear);
+					$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
+						$selectedMonth + 1*$i, $selectedDay + 1, $selectedYear);
+
+					$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
+						$selectedDay + 1, $selectedYear);
+					$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
+						$selectedDay + 1, $selectedYear);
+				}
 
 
 
@@ -175,7 +202,15 @@ class Event
 							{
 								$cnt ++;
 							}
+							else
+							{
+
+							}
 						}
+					}
+					else
+					{
+						$this->error['ERROR_DATA'] ='Wrong date!';
 					}
 				}
 				else
@@ -186,12 +221,15 @@ class Event
 					{
 						$cnt++;
 					}
+					else
+					{
+
+					}
 				}
 				if(count($eventCurrentDay) != $cnt)
 				{
 					$i++;
-					return $this->error['ERROR_DATA'] =
-						'Wrong time on '.$i.' recursion!';
+					$this->error['ERROR_DATA'] ='Wrong time on '.$i.' recursion!';
 				}
 			}
 
@@ -224,16 +262,156 @@ class Event
 				return true;
 			}
 		}
+		return $this->error;
+	}
 
+
+
+	public function detailsEvent()
+	{
+		$myPdo = MyPdo::getInstance();
+		$id_appointment = $this->data;
+		$currentEvent = $myPdo->select('*')
+			->table('appointments')
+			->where(array('id_appointment' => $id_appointment),
+				array('='))
+			->query()
+			->commit();
+
+		$name_employee = $myPdo->select('name_employee')
+			->table('employee')
+			->where(array('id_employee' => $currentEvent[0]['id_employee']),
+				array('='))
+			->query()
+			->commit();
+
+		$startTime = date('H', $currentEvent[0]['start']).
+		':'.date('i', $currentEvent[0]['start']);
+
+		$endTime = date('H', $currentEvent[0]['end']).
+			':'.date('i', $currentEvent[0]['end']);
+
+		$currentTime = time();
+
+		if(0 == $currentEvent[0]['recursion']){
+			$this->dArray['RECURRENCE'] = 'style="display: none;"';
+		}
+		else
+		{
+			$this->dArray['RECURRENCE'] = '';
+			$this->dArray['RECURID'] = $currentEvent[0]['recursion'];
+
+		}
+		$this->dArray['EMPLOYEEID'] = $currentEvent[0]['id_employee'];
+		$this->dArray['START'] = $currentEvent[0]['start'];
+		$this->dArray['TITLE'] = $startTime.' - '. $endTime;
+		$this->dArray['STARTTIME'] = $startTime;
+		$this->dArray['ENDTIME'] = $endTime;
+		$this->dArray['WHO'] = '<option>'.$name_employee[0]['name_employee'].'</option>';
+		$this->dArray['NOTES'] = $currentEvent[0]['description'];
+		$this->dArray['SUBMITTED'] = $currentEvent[0]['submitted'];
+		$this->dArray['ID'] = $id_appointment;
+		if($currentTime > $currentEvent[0]['start'])
+		{
+			$this->dArray['ACTIVE'] = 'disabled';
+		}
+		else
+		{
+			$this->dArray['ACTIVE'] = '';
+		}
+
+		return $this->dArray;
+	}
+
+	public function deleteEvent()
+	{
+		$currentTime = time();
+		$myPdo = MyPdo::getInstance();
+		$id_appointment = $this->data;
+		if(!isset($this->recurent))
+		{
+			$rez = $myPdo->delete()
+				->table('appointments')
+				->where(array('id_appointment'=>$id_appointment, 'start'=>$currentTime)
+				,array('=', '>='))
+				->query()
+				->commit();
+			return $rez;
+		}
+		else
+		{
+			$allRecurEvent = $myPdo->select('id_appointment')
+				->table('appointments')
+				->where(array('recursion' => $this->recurent, 'start' => $currentTime),
+					array('=', '>='))
+				->query()
+				->commit();
+			foreach($allRecurEvent as $value)
+			{
+				$myPdo->delete()
+					->table('appointments')
+					->where(array('id_appointment'=>$value['id_appointment']),array('='))
+					->query()
+					->commit();
+			}
+			return true;
+		}
+	}
+
+	public function updateEvent()
+	{
+		$currentTime = time();
+		$myPdo = MyPdo::getInstance();
+		$updateData = $this->data;
+		if(!isset($this->recurent))
+		{
+			$currentDay = $updateData['start'];
+			$day = date('j', $currentDay);
+			$mon = date('m', $currentDay);
+			$year = date('Y', $currentDay);
+
+			$arrayStartTime = explode(':', $updateData['starttime']);
+			$arrayEndTime = explode(':', $updateData['endtime']);
+
+			$startTimeUpdate = mktime($arrayStartTime[0],$arrayStartTime[1],0,
+				$mon, $day, $year);
+			$endTimeUpdate = mktime($arrayEndTime[0],$arrayEndTime[1],0,
+				$mon, $day, $year);
+
+			if($currentTime < $startTimeUpdate
+				&& $currentTime < $currentDay
+				&& $startTimeUpdate < $endTimeUpdate)
+			{
+				$myPdo->update()
+					->table("appointments")
+					->set(array('description'=> $updateData['description'],
+						'id_employee'=>$updateData['empl'], 'start'=> $startTimeUpdate,
+					'end'=> $endTimeUpdate))
+					->where(array('id_appointment'=>$updateData['update'] ), array('='))
+					->query()
+					->commit();
+				return true;
+			}
+			else
+			{
+				$this->error['ERROR_DATA'] ='Wrong date!';
+			}
+		}
+		return $this->error;
 	}
 
 
 
 
+	public function setRecurent($var)
+	{
+		$this->recurent = $var;
+	}
 
-
-
-
+	public function userRole($var)
+	{
+		$this->userRole = $var;
+	}
 
 	public function setData($var)
 	{

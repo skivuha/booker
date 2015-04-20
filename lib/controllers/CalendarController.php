@@ -44,6 +44,10 @@ class CalendarController extends Controller
 		$cal->setFlagParams($getParam);
 		$data = $cal->printCalendar();
 		$view = new View;
+		if(true === $this->userRole)
+		{
+			$data['ADMIN'] = $view->setTemplateFile('employee')->renderFile();
+		}
 		$view->addToReplace($data);
 		$view->addToReplace($this->langArr);
 		$view->setTemplateFile('calendar')->templateRenderContent();
