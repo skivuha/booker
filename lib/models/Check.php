@@ -8,7 +8,6 @@ class Check
 	private $myPdo;
 	private $redirect;
 	private $data;
-	private $statusUser;
 
 	public function __construct()
 	{
@@ -50,7 +49,7 @@ class Check
 
 	private function setTimeFormat()
 	{
-		if(!isset($_COOKIE['langanator']))
+		if(!isset($_COOKIE['user2_timeFormat']))
 		{
 			$this->cookie->add('user2_timeFormat','24h');
 		}
@@ -155,6 +154,7 @@ class Check
 				return false;
 			}
 		}
+		return true;
 	}
 }
 

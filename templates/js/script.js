@@ -3,10 +3,14 @@ $(document).ready(
     {
         $('#recuringon').on('click', function(){
                 $('#recurring').css('display', 'block');
+                $('#weekly').attr('checked', 'checked');
             }
         );
         $('#recuringoff').on('click', function(){
                 $('#recurring').css('display', 'none');
+                $('#weekly').removeAttr('checked');
+                $('#bi-weekly').removeAttr('checked');
+                $('#monthly').removeAttr('checked');
             }
         );
 
@@ -245,6 +249,7 @@ function setValueEndHour() {
     })
 }
 
+
 function setMaxDuration()
 {
     $('#weekly').on('click', function() {
@@ -270,9 +275,14 @@ function addEvent() {
         method: 'POST',
         data: $("#modal").serialize()
     }).then(function(data){
-        console.log(data);
-        if(data == true) {
+        var objJ = JSON.parse(data);
+        if(objJ[0] == true) {
             $('#myModal').modal('hide');
+        }
+        else
+        {
+            $('#wrongdata').attr('class','bg-danger');
+            $('#wrongdataerror').html(objJ['ERROR_DATA']).css('color','red');
         }
     })
 }

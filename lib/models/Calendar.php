@@ -230,10 +230,10 @@ class Calendar
       ->where(array('start' => $this->firstDayTimeStampChoiseMonth,
 										'end'=> $this->lastDayTimeStampChoiseMonth,
 										'id_room'=> $this->room),
-				array('>','<','='))
+				array('>=','<=','='))
+			->order('start ASC')
       ->query()
       ->commit();
-
 
       foreach($arr as $key=>$val)
       {
@@ -264,11 +264,9 @@ class Calendar
 					}
 				}
 
-
-
 	 $this->calendar['EVENT'.$day].= '<br><a href="'.PATH.'"
 	  class="event">'.$startTime.' - '.$endTime.'</a>';
-	}
+		}
 	}
 
 	private function getDataToBookIt()

@@ -50,5 +50,11 @@ class CalendarController extends Controller
 		$view->setTemplateFile('workpage')->templateRenderContent();
 		$view->setTemplateFile('index')->templateRender();
 	}
+	public function logoutAction()
+	{
+		session_destroy();
+		$this->cookie->remove('code_employee');
+		header('Location: '.PATH.'');
+	}
 }
 ?>

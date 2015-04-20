@@ -2,7 +2,9 @@
 <div class="col-xs-4">
     <span>Welcome, {{NAME_EMPL}}.</span>
     BOARDROOM #{{ROOM}} selected.
-    </div>
+    <form action="/Calendar/logout/" method="post">
+        <input type="submit" class="btn btn-default btn-xs" value="Exit" name="exit"></form>
+</div>
     <div class="col-xs-4">
     <a href="/Calendar/index/room/1">Boardroom1</a> |
     <a href="/Calendar/index/room/2">Boardroom2</a> |
@@ -12,14 +14,11 @@
 <div class="row">
     <div class="col-xs-10">
         {{CONTENT}}
-    </div>
-    <div class="col-xs-2">
-        <div class="row">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-default btn-sm"
-                    data-toggle="modal" data-target="#myModal">
-                Book It!
-            </button>
+          </div>
+           <div class="col-xs-2">
+               <div class="row">
+                   <!-- Button trigger modal -->
+
             <!-- Modal -->
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -45,9 +44,12 @@
                                 <select name="selectedyear"
                                         id="dropdownyear"></select>
                             </p>
-                            <p>3. Specify what the time and end of the
+                            <p id="wrongdata">3. Specify what the time and en
+                                d of
+                                the
                                 meeting (This will be what people see on
                                 the calendar.)
+                                <span id="wrongdataerror"> &nbsp;</span>
                             </p>
                                 <p>
                                     <select name="starthour"
@@ -116,6 +118,11 @@
                 </div>
             </div>
         </div>
+               <div class="row">
         {{ADMIN}}
-    </div>
+                   <button type="button" class="btn btn-default"
+                           data-toggle="modal" data-target="#myModal">
+                       Book It!
+                   </button>
+    </div></div>
 </div>

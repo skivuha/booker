@@ -257,7 +257,7 @@ class MyPdo
         //}
         if(strlen($this->order)!=0)
         {
-            $order="ORDER BY :order";
+            $order="ORDER BY $this->order ";
         }
         if(strlen($this->limit_end)!=0)
         {
@@ -320,10 +320,6 @@ class MyPdo
             {
                 $stmt->bindValue(':'.$key,$val,PDO::PARAM_STR);
             }
-        }
-        if(strlen($this->order) !=0)
-        {
-            $stmt->bindParam(':order',$this->order);
         }
         if(strlen($this->limit_start) != 0 && strlen($this->limit_end) !=0)
         {

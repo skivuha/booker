@@ -42,6 +42,11 @@ class View
 		}
 	}
 
+	public function ajax($arr)
+	{
+		echo json_encode($arr);
+	}
+
 	private function langRender()
 	{
 		foreach ($this->forRender as $key => $val)

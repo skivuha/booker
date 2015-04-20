@@ -73,7 +73,15 @@ class Event
 					{
 						$cnt++;
 					}
+					else
+					{
+						$this->error['ERROR_DATA'] ='Sorry, this time alredy busy!';
+					}
 				}
+			}
+			else
+			{
+				$this->error['ERROR_DATA'] ='Wrong date!';
 			}
 			if(count($eventCurrentDay) == $cnt)
 			{
@@ -84,11 +92,10 @@ class Event
 											'id_room'=>$room,	'recursion'=>'0'))
 					->query()
 					->commit();
-				return $arr;
+				return true;
 			}
 			else
 			{
-				$this->error['ERROR_INTERVAL'] ='Sorry, this time alredy busy!';
 				return $this->error;
 			}
 		}
@@ -109,6 +116,7 @@ class Event
 		$currentTime = time();
 		$session = Session::getInstance();
 		$room = $session->getSession('room');
+
 
 		$myPdo = MyPdo::getInstance();
 		if('weekly' == $this->data['recuring']
@@ -182,7 +190,7 @@ class Event
 				if(count($eventCurrentDay) != $cnt)
 				{
 					$i++;
-					$this->error['ERROR_INTERVAL'] =
+					return $this->error['ERROR_DATA'] =
 						'Wrong time on '.$i.' recursion!';
 				}
 			}

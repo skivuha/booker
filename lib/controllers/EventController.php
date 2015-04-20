@@ -8,6 +8,7 @@ class EventController extends Controller
 	{
 		$this->valid = new Validator();
 		$this->event = new Event();
+		$this->view = new View();
 	}
 	public function addAction()
 	{
@@ -15,19 +16,30 @@ class EventController extends Controller
 		$this->event->setData($action);
 		if('false' == $action['recuringon'])
 		{
-			$this->event->checkDateNoRecursion();
+			$status = $this->event->checkDateNoRecursion();
+			if(true === $status)
+			{
+				$array[0]=true;
+				$this->view->ajax($array);
+			}
+			else
+			{
+				$this->view->ajax($status);
+			}
 		}
 		else
 		{
-			$this->event->checkDateRecursion();
+			$status = $this->event->checkDateRecursion();
+			if(true === $status)
+			{
+				$array[0]=true;
+				$this->view->ajax($array);
+			}
+			else
+			{
+				$this->view->ajax($status);
+			}
 		}
-
-
-		//echo '<pre>';
-		//print_r($action);
-		//echo true;
-
-
 	}
 }
 ?>
