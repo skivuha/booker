@@ -202,10 +202,6 @@ class Event
 							{
 								$cnt ++;
 							}
-							else
-							{
-
-							}
 						}
 					}
 					else
@@ -220,10 +216,6 @@ class Event
 						|| $startTime[$i] == $endTime[$i])
 					{
 						$cnt++;
-					}
-					else
-					{
-
 					}
 				}
 				if(count($eventCurrentDay) != $cnt)
@@ -340,7 +332,7 @@ class Event
 		}
 		else
 		{
-			$allRecurEvent = $myPdo->select('id_appointment')
+			/*$allRecurEvent = $myPdo->select('id_appointment')
 				->table('appointments')
 				->where(array('recursion' => $this->recurent, 'start' => $currentTime),
 					array('=', '>='))
@@ -354,7 +346,15 @@ class Event
 					->query()
 					->commit();
 			}
-			return true;
+			return true;*/
+			$myPdo->delete()
+				->table('appointments')
+				->where(array('recursion'=>$this->recurent,
+											'start'=>$currentTime),array('=','>='))
+				->query()
+				->commit();
+
+		return true;
 		}
 	}
 
@@ -373,28 +373,55 @@ class Event
 			$arrayStartTime = explode(':', $updateData['starttime']);
 			$arrayEndTime = explode(':', $updateData['endtime']);
 
-			$startTimeUpdate = mktime($arrayStartTime[0],$arrayStartTime[1],0,
-				$mon, $day, $year);
-			$endTimeUpdate = mktime($arrayEndTime[0],$arrayEndTime[1],0,
-				$mon, $day, $year);
 
-			if($currentTime < $startTimeUpdate
-				&& $currentTime < $currentDay
-				&& $startTimeUpdate < $endTimeUpdate)
+			$startTimeUpdate = mktime($arrayStartTime[0], $arrayStartTime[1], 0, $mon, $day, $year);
+			$endTimeUpdate = mktime($arrayEndTime[0], $arrayEndTime[1], 0, $mon, $day, $year);
+			$startDay = mktime(0, 0, 0, $mon, $day, $year);
+			$endDay = mktime(23, 59, 59, $mon, $day, $year);
+
+			$check = $myPdo->select('*')
+				->table('appointments')
+				->where(array('start' => $startDay, 'end' => $endDay,
+						'id_appointment'=>$updateData['update']),
+					array('>=', '<=', '!='))
+				->query()
+				->commit();
+			if (isset($check))
 			{
-				$myPdo->update()
-					->table("appointments")
-					->set(array('description'=> $updateData['description'],
-						'id_employee'=>$updateData['empl'], 'start'=> $startTimeUpdate,
-					'end'=> $endTimeUpdate))
-					->where(array('id_appointment'=>$updateData['update'] ), array('='))
-					->query()
-					->commit();
-				return true;
+				$cnt = 0;
+				foreach ($check as $key => $value)
+				{
+					if ($value['end'] <= $startTimeUpdate || $value['start'] >= $endTimeUpdate)
+					{
+						$cnt ++;
+					}
+				}
+			}
+
+			if (count($check) != $cnt)
+			{
+				$this->error['ERROR_DATA'] = 'Sorry, this time alredy busy!';
 			}
 			else
 			{
-				$this->error['ERROR_DATA'] ='Wrong date!';
+				if ($currentTime < $startTimeUpdate && $currentTime < $currentDay && $startTimeUpdate < $endTimeUpdate)
+				{
+					$myPdo->update()->table("appointments")
+						->set(array('description' => $updateData['description'],
+												'id_employee' => $updateData['empl'],
+												'start' => $startTimeUpdate,
+												'end' => $endTimeUpdate))
+						->where(array('id_appointment' => $updateData['update']),
+							array('='))
+						->query()
+						->commit();
+
+					return true;
+				}
+				else
+				{
+					$this->error['ERROR_DATA'] = 'Wrong date!';
+				}
 			}
 		}
 		return $this->error;

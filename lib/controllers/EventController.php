@@ -51,20 +51,26 @@ class EventController extends Controller
 		$this->event->setData($param);
 		$this->event->userRole($this->userRole);
 		$arrayToDetails = $this->event->detailsEvent();
+		$this->view->addToReplace($arrayToDetails);
+		$this->view->setTemplateFile('details')->templateRender();
+	}
 
-
-		if(isset($_POST['delete']))
+	public function updateAction()
+	{
+		$param = $this->data->getParams();
+		$name = $this->valid->clearData($param['do']);
+		$id = $this->valid->numCheck($param['id']);
+		if('delete' == $name)
 			{
-				$param = $this->valid->numCheck($_POST['delete']);
 				if(isset($_POST['recurrences']))
 				{
 					$recur = $this->valid->numCheck($_POST['recurrences']);
 					$this->event->setRecurent($recur);
 				}
-				$this->event->setData($param);
+				$this->event->setData($id);
 				$this->event->deleteEvent();
 			}
-		if(isset($_POST['update']))
+		if('update' == $name)
 		{
 			$param = $this->valid->clearDataArr($_POST);
 			if(isset($_POST['recurrences']))
@@ -72,6 +78,7 @@ class EventController extends Controller
 				//$recur = $this->valid->numCheck($_POST['recurrences']);
 				//$this->event->setRecurent($recur);
 			}
+			$param['update'] = $id;
 			$this->event->setData($param);
 			$status = $this->event->updateEvent();
 			if(true === $status)
@@ -84,9 +91,6 @@ class EventController extends Controller
 				$this->view->ajax($status);
 			}
 		}
-		$this->view->addToReplace($arrayToDetails);
-		$this->view->setTemplateFile('details')->templateRender();
-
 	}
 
 }

@@ -136,10 +136,14 @@ $(document).ready(
             addEvent();
         });
         $('#deletebuttn').on('click', function(){
-            deleteEvent();
+            var id = $('#deletebuttn').attr('value');
+            var name = $('#deletebuttn').attr('name');
+            deleteEvent(id, name);
         });
         $('#updatebuttn').on('click', function(){
-            updateEvent();
+            var id = $('#updatebuttn').attr('value');
+            var name = $('#updatebuttn').attr('name');
+            updateEvent(id, name);
         });
     }
 );
@@ -295,10 +299,10 @@ function addEvent() {
     })
 }
 
-function deleteEvent()
+function deleteEvent(value, doit)
 {
     $.ajax({
-        url: '/Event/edit/',
+        url: '/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){
@@ -311,15 +315,15 @@ function deleteEvent()
     })
 }
 
-function updateEvent()
+function updateEvent(value, doit)
 {
     $.ajax({
-        url: '/Event/edit/',
+        url: '/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){
+        console.log(data);
         var objJ = JSON.parse(data);
-       /* console.log(objJ);
         if(objJ[0] == true) {
             window.onunload = function(){
                 if (window.opener){
@@ -332,8 +336,5 @@ function updateEvent()
         {
             $('#warningupdate').html(objJ['ERROR_DATA']);
         }
-
-*/
-
     })
 }
