@@ -24,7 +24,7 @@ class Validator
 
   public function clearDataArr(array $arr)
   {
-    if (!empty($arr)) {
+    if (!empty($arr) && is_array($arr)) {
       foreach ($arr as $key => $value) {
         $data[$key] = $this->clearData($value);
       }
@@ -58,7 +58,14 @@ class Validator
 
   public function numCheck($val)
   {
-    return $this->value = abs((int)($val));
+    if(is_int($val))
+    {
+      return $this->value = abs((int)($val));
+    }
+    else
+    {
+      return false;
+    }
   }
 
   public function getValue()

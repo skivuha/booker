@@ -24,7 +24,7 @@ class Session
 
     public function setSession($key, $val)
     {
-            $_SESSION[$key]=$val;
+        $_SESSION[$key]=$val;
     }
 
     public function getSession($key)
