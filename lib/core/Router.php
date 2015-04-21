@@ -20,6 +20,7 @@ class Router
 
 	private function __construct()
 	{
+		Session::getInstance();
 		$request = $_SERVER['REQUEST_URI'];
 		$splits = explode('/', trim($request, '/'));
 		if(!empty($splits[CONTROLLER]))

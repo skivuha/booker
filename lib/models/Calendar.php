@@ -224,6 +224,7 @@ class Calendar
 
 	private function getAppointments()
 	{
+		$session = Session::getInstance();
 		$myPdo = MyPdo::getInstance();
     $arr = $myPdo->select('*')
       ->table('appointments')
@@ -235,8 +236,20 @@ class Calendar
       ->query()
       ->commit();
 
+
+
+
       foreach($arr as $key=>$val)
       {
+				if(true === $this->userRole
+					|| $val['id_employee'] == $session->getSession('id_employee'))
+				{
+					$role = '';
+				}
+				else
+				{
+					$role = 'id = "roleC"';
+				}
 		$day = (int)date('d',$val['start']);
 				$timeForm = 12;
 		$startTime = 	date('H', $val['start']).':'.date('i', $val['start']);
@@ -266,16 +279,33 @@ class Calendar
 
 	 $this->calendar['EVENT'.$day].= '<br><a href="" name="'
 		 .$val['id_appointment'].'"
-	  class="event">'.$startTime.' - '.$endTime.'</a>';
+	  class="event" '.$role.'>'.$startTime.' - '.$endTime.'</a>';
 		}
 	}
 
 	private function getDataToBookIt()
 	{
+		$myPdo = MyPdo::getInstance();
+		$employee = $myPdo->select('name_employee, id_employee')
+			->table('employee')
+			->where(array('name_employee' => 'root'), array('!='))
+			->query()
+			->commit();
+
 		$session = Session::getInstance();
-		$this->calendar['BOOKIT_USERNAME'] = $session->getSession('name_employee');
-		$this->calendar['BOOKIT_ID'] = $session->getSession('id_employee');
-		$leftDayInMonth = $this->countDayOfCurrentMonth - $this->currentDay;
+		if(false === $this->userRole)
+		{
+			$this->calendar['USER'] = '<option value="'.$session->getSession
+			('id_employee').'">'.$session->getSession('name_employee').'</option>';
+		}
+		else
+		{
+			foreach($employee as $key => $value)
+			{
+				$this->calendar['USER'].= '<option value="'.$value['id_employee'].'">'
+			.$value['name_employee'].'</option>';
+			}
+		}
 	}
 }
 ?>

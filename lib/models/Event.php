@@ -263,6 +263,7 @@ class Event
 	{
 		$myPdo = MyPdo::getInstance();
 		$id_appointment = $this->data;
+		$session = Session::getInstance();
 		$currentEvent = $myPdo->select('*')
 			->table('appointments')
 			->where(array('id_appointment' => $id_appointment),
@@ -270,7 +271,7 @@ class Event
 			->query()
 			->commit();
 
-		$name_employee = $myPdo->select('name_employee')
+		$name_employee = $myPdo->select('name_employee, id_employee')
 			->table('employee')
 			->where(array('id_employee' => $currentEvent[0]['id_employee']),
 				array('='))
@@ -292,14 +293,39 @@ class Event
 		{
 			$this->dArray['RECURRENCE'] = '';
 			$this->dArray['RECURID'] = $currentEvent[0]['recursion'];
-
 		}
+
 		$this->dArray['EMPLOYEEID'] = $currentEvent[0]['id_employee'];
 		$this->dArray['START'] = $currentEvent[0]['start'];
 		$this->dArray['TITLE'] = $startTime.' - '. $endTime;
 		$this->dArray['STARTTIME'] = $startTime;
 		$this->dArray['ENDTIME'] = $endTime;
-		$this->dArray['WHO'] = '<option>'.$name_employee[0]['name_employee'].'</option>';
+		if(false == $this->userRole)
+		{
+			$listUser = '<option value="'.$name_employee[0]['id_employee'].'">
+			'.$name_employee[0]['name_employee']
+				.'</option>';
+		}
+		else
+		{
+			$employee = $myPdo->select('name_employee, id_employee')
+				->table('employee')
+				->where(array('name_employee' => 'root'), array('!='))
+				->query()
+				->commit();
+			foreach($employee as $key => $value)
+			{
+				$thisUser ='';
+				if($name_employee[0]['name_employee'] == $value['name_employee'])
+				{
+					$thisUser = 'selected';
+				}
+				$listUser .= '<option value="' . $value['id_employee'] . '" '.$thisUser
+					.'>' .
+					$value['name_employee'] . '</option>';
+			}
+		}
+		$this->dArray['WHO'] = $listUser;
 		$this->dArray['NOTES'] = $currentEvent[0]['description'];
 		$this->dArray['SUBMITTED'] = $currentEvent[0]['submitted'];
 		$this->dArray['ID'] = $id_appointment;
@@ -317,18 +343,24 @@ class Event
 
 	public function deleteEvent()
 	{
+		$session = Session::getInstance();
 		$currentTime = time();
 		$myPdo = MyPdo::getInstance();
 		$id_appointment = $this->data;
+		$updateData = $_POST['empl'];
 		if(!isset($this->recurent))
 		{
-			$rez = $myPdo->delete()
-				->table('appointments')
-				->where(array('id_appointment'=>$id_appointment, 'start'=>$currentTime)
-				,array('=', '>='))
-				->query()
-				->commit();
-			return $rez;
+			if(true === $this->userRole
+				|| $updateData == $session->getSession('id_employee'))
+			{
+				$rez = $myPdo->delete()->table('appointments')->where(array('id_appointment' => $id_appointment, 'start' => $currentTime), array('=', '>='))->query()->commit();
+
+				return $rez;
+			}
+			else
+			{
+				$this->error['ERROR_DATA'] = 'Access denied!';
+			}
 		}
 		else
 		{
@@ -347,6 +379,9 @@ class Event
 					->commit();
 			}
 			return true;*/
+			if(true === $this->userRole
+				|| $updateData == $session->getSession('id_employee'))
+			{
 			$myPdo->delete()
 				->table('appointments')
 				->where(array('recursion'=>$this->recurent,
@@ -355,7 +390,13 @@ class Event
 				->commit();
 
 		return true;
+			}
+			else
+			{
+				$this->error['ERROR_DATA'] = 'Access denied!';
+			}
 		}
+		return $this->error;
 	}
 
 	public function updateEvent()
@@ -363,7 +404,8 @@ class Event
 		$currentTime = time();
 		$myPdo = MyPdo::getInstance();
 		$updateData = $this->data;
-		if(!isset($this->recurent))
+		$session = Session::getInstance();
+		if ( ! isset($this->recurent))
 		{
 			$currentDay = $updateData['start'];
 			$day = date('j', $currentDay);
@@ -379,13 +421,7 @@ class Event
 			$startDay = mktime(0, 0, 0, $mon, $day, $year);
 			$endDay = mktime(23, 59, 59, $mon, $day, $year);
 
-			$check = $myPdo->select('*')
-				->table('appointments')
-				->where(array('start' => $startDay, 'end' => $endDay,
-						'id_appointment'=>$updateData['update']),
-					array('>=', '<=', '!='))
-				->query()
-				->commit();
+			$check = $myPdo->select('*')->table('appointments')->where(array('start' => $startDay, 'end' => $endDay, 'id_appointment' => $updateData['update']), array('>=', '<=', '!='))->query()->commit();
 			if (isset($check))
 			{
 				$cnt = 0;
@@ -404,19 +440,28 @@ class Event
 			}
 			else
 			{
-				if ($currentTime < $startTimeUpdate && $currentTime < $currentDay && $startTimeUpdate < $endTimeUpdate)
+				if ($currentTime < $startTimeUpdate && $currentTime < $currentDay &&
+					$startTimeUpdate < $endTimeUpdate)
 				{
-					$myPdo->update()->table("appointments")
-						->set(array('description' => $updateData['description'],
-												'id_employee' => $updateData['empl'],
-												'start' => $startTimeUpdate,
-												'end' => $endTimeUpdate))
-						->where(array('id_appointment' => $updateData['update']),
-							array('='))
-						->query()
-						->commit();
-
-					return true;
+					if(true === $this->userRole
+						|| $updateData['employee'] == $session->getSession
+						('id_employee'))
+					{
+						$myPdo->update()->table("appointments")
+							->set(array('description' => $updateData['description'],
+													'id_employee' => $updateData['employee'],
+													'start' => $startTimeUpdate,
+													'end' => $endTimeUpdate))
+							->where(array('id_appointment' => $updateData['update']),
+								array('='))
+							->query()
+							->commit();
+						return true;
+					}
+					else
+					{
+						$this->error['ERROR_DATA'] = 'Access denied!';
+					}
 				}
 				else
 				{
@@ -424,9 +469,88 @@ class Event
 				}
 			}
 		}
+		else
+		{
+			$allEvent = $myPdo->select('*')->table('appointments')->where(array('recursion' => $this->recurent), array('='))->query()->commit();
+
+			$new_employee = $updateData['employee'];
+			$newStartTime = explode(':', $updateData['starttime']);
+			$newEndTime = explode(':', $updateData['endtime']);
+			$id_employee = $allEvent[0]['id_employee'];
+
+			foreach ($allEvent as $value)
+			{
+				$id_appointment = $value['id_appointment'];
+				$currentDay = $value['start'];
+				$day = date('j', $currentDay);
+				$mon = date('m', $currentDay);
+				$year = date('Y', $currentDay);
+
+				$startDay = mktime(0, 0, 0, $mon, $day, $year);
+				$endDay = mktime(23, 59, 59, $mon, $day, $year);
+
+				$startTimeUpdate = mktime($newStartTime[0], $newStartTime[1], 0, $mon, $day, $year);
+				$endTimeUpdate = mktime($newEndTime[0], $newEndTime[1], 0, $mon, $day, $year);
+
+				$check = $myPdo->select('*')->table('appointments')
+					->where(array('start' => $startDay, 'end' => $endDay,
+												'id_appointment' => $id_appointment),
+						array('>=', '<=', '!='))
+					->query()
+					->commit();
+
+				if (isset($check))
+				{
+					$cnt = 0;
+					foreach ($check as $key => $val)
+					{
+						if ($val['end'] <= $startTimeUpdate || $val['start'] >= $endTimeUpdate)
+						{
+							$cnt ++;
+						}
+					}
+				}
+
+				if (count($check) != $cnt)
+				{
+					$this->error['ERROR_DATA'] = 'Warning, '.$day.' '.
+						date('F', $currentDay).' alredy	busy!';
+				}
+				else
+				{
+					if ($currentTime < $startTimeUpdate
+						&& $currentTime < $currentDay
+						&& $startTimeUpdate < $endTimeUpdate)
+					{
+						if(true === $this->userRole
+							|| $updateData['employee'] == $session->getSession('id_employee'))
+						{
+							$myPdo->update()
+								->table("appointments")
+								->set(array('description' => $updateData['description'],
+														'id_employee' => $updateData['employee'],
+														'start' => $startTimeUpdate,
+														'end' => $endTimeUpdate))
+								->where(array('id_appointment' => $id_appointment),
+									array('='))
+								->query()
+								->commit();
+						}
+						else
+						{
+							$this->error['ERROR_DATA'] = 'Access denied!';
+						}
+					}
+					else
+					{
+						$this->error['ERROR_DATA'] = 'Warning, '.$day.' '.
+							date('F', $currentDay).' alredy	busy!';
+					}
+				}
+			}
+		}
 		return $this->error;
 	}
-
 
 
 

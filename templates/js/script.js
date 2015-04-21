@@ -19,7 +19,7 @@ $(document).ready(
         $('.event').bind('click', function () {
             var target = event.target || event.srcElement;
             var id = $(this).attr('name');
-            window.open('/Event/edit/id/'+id, 'Appointment', 'location = no, width = 350px,' +
+            window.open('/Event/edit/id/'+id, '_blank', 'location, width = 350px,' +
             'height = 415px, top = '+height+'px, left = '+widht+'px ').focus();
         });
 
@@ -306,24 +306,8 @@ function deleteEvent(value, doit)
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){
-        window.onunload = function(){
-            if (window.opener){
-                window.opener.location.href = window.opener.location.href;
-            }
-        };
-        window.close();
-    })
-}
-
-function updateEvent(value, doit)
-{
-    $.ajax({
-        url: '/Event/update/id/'+value+'/do/'+doit,
-        method: 'POST',
-        data: $("#details").serialize()
-    }).then(function(data){
-        console.log(data);
         var objJ = JSON.parse(data);
+        console.log(data);
         if(objJ[0] == true) {
             window.onunload = function(){
                 if (window.opener){
@@ -335,6 +319,48 @@ function updateEvent(value, doit)
         else
         {
             $('#warningupdate').html(objJ['ERROR_DATA']);
+            window.onunload = function(){
+                if (window.opener){
+                    window.opener.location.href = window.opener.location.href;
+                }
+            };
+            setTimeout('window.close()',2000);
+        }
+ /*       window.onunload = function(){
+            if (window.opener){
+                window.opener.location.href = window.opener.location.href;
+            }
+        };
+        window.close();*/
+    })
+}
+
+function updateEvent(value, doit)
+{
+    $.ajax({
+        url: '/Event/update/id/'+value+'/do/'+doit,
+        method: 'POST',
+        data: $("#details").serialize()
+    }).then(function(data){
+        var objJ = JSON.parse(data);
+        console.log(data);
+        if(objJ[0] == true) {
+            window.onunload = function(){
+                if (window.opener){
+                    window.opener.location.href = window.opener.location.href;
+                }
+            };
+            window.close();
+        }
+        else
+        {
+            $('#warningupdate').html(objJ['ERROR_DATA']);
+            window.onunload = function(){
+                if (window.opener){
+                    window.opener.location.href = window.opener.location.href;
+                }
+            };
+            setTimeout('window.close()',2000);
         }
     })
 }

@@ -11,6 +11,8 @@ class EventController extends Controller
 		$this->valid = new Validator();
 		$this->event = new Event();
 		$this->view = new View();
+		$this->accessToCalendar();
+
 	}
 	public function addAction()
 	{
@@ -57,6 +59,7 @@ class EventController extends Controller
 
 	public function updateAction()
 	{
+		$this->event->userRole($this->userRole);
 		$param = $this->data->getParams();
 		$name = $this->valid->clearData($param['do']);
 		$id = $this->valid->numCheck($param['id']);
@@ -68,17 +71,27 @@ class EventController extends Controller
 					$this->event->setRecurent($recur);
 				}
 				$this->event->setData($id);
-				$this->event->deleteEvent();
+				$status = $this->event->deleteEvent();
+				if(true === $status)
+				{
+					$array[0]=true;
+					$this->view->ajax($array);
+				}
+				else
+				{
+					$this->view->ajax($status);
+				}
 			}
 		if('update' == $name)
 		{
 			$param = $this->valid->clearDataArr($_POST);
+			$param['update'] = $id;
 			if(isset($_POST['recurrences']))
 			{
-				//$recur = $this->valid->numCheck($_POST['recurrences']);
-				//$this->event->setRecurent($recur);
+				$recur = $this->valid->numCheck($_POST['recurrences']);
+				$this->event->setRecurent($recur);
 			}
-			$param['update'] = $id;
+
 			$this->event->setData($param);
 			$status = $this->event->updateEvent();
 			if(true === $status)

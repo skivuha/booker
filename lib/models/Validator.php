@@ -58,14 +58,7 @@ class Validator
 
   public function numCheck($val)
   {
-    if(is_int($val))
-    {
       return $this->value = abs((int)($val));
-    }
-    else
-    {
-      return false;
-    }
   }
 
   public function getValue()
