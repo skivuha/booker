@@ -28,6 +28,7 @@ class Calendar
 	public function setFirstDay($var)
 	{
 		$this->startDay = $var;
+		return true;
 	}
 
 	private function getCurrentData()

@@ -1,9 +1,13 @@
 <?php
+include("lib/models/Session.php");
+include("config.php");
+include("lib/models/MyPdo.php");
+include("lib/models/Cookie.php");
 include("lib/models/Auth.php");
-class EncodeTest extends PHPUnit_Framework_TestCase {
+class CalendarTest extends PHPUnit_Framework_TestCase {
     function setUp()
     {
-        $this->auth =new Auth();
+        $this->calendar = new Calendar();
         $this->string = 'mimimi';
         $this->number = 4;
         $this->array = array();
@@ -11,15 +15,13 @@ class EncodeTest extends PHPUnit_Framework_TestCase {
 
     function tearDown()
     {
-        $this->auth = null;
+        $this->calendar = null;
     }
 
-    public function testGenerateCode()
+    public function testGetCurrentData()
     {
-      $this->assertTrue(is_string($this->encode->generateCode($this->string)));
-      $this->assertFalse(is_string($this->encode->generateCode($this->array)));
-      $this->assertTrue(is_string($this->encode->generateCode($this->number)));
-      $this->assertEquals(10 ,strlen($this->encode->generateCode($this->number)));
+      $this->assertEquals();
     }
+
+
 }
- 

@@ -35,6 +35,12 @@ class Event
 		$session = Session::getInstance();
 		$room = $session->getSession('room');
 
+		$dayOfWeek = date('w', $startTime);
+		if(6 == $dayOfWeek || 0 == $dayOfWeek)
+		{
+			$this->error['ERROR'] = 'Warrning, this day a weekend!'
+			return $this->error;
+		}
 		$myPdo = MyPdo::getInstance();
 		$eventCurrentDay = $myPdo->select('*')
 			->table('appointments')
@@ -61,7 +67,7 @@ class Event
 		}
 		else
 		{
-			$this->error['ERROR_DATA'] ='Wrong date!';
+			$this->error['ERROR_DATA'] = 'Wrong date!';
 			return $this->error;
 		}
 	}
