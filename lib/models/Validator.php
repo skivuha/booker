@@ -1,17 +1,25 @@
 <?php
 
-/**
+/*
  * Class: Validator
  *
  */
+
 class Validator
 {
+
   private $value;
 
   public function __construct()
   {
   }
 
+	 /*
+	 * Clear data from user
+	 *
+	 * @param data: number of string
+	 * @return: data
+ 	 */
   public function clearData($data)
   {
     if (is_array($data)) {
@@ -22,6 +30,12 @@ class Validator
     }
   }
 
+ /*
+ * Clear data from user
+ *
+ * @param arr: array of data
+ * @return: data or false
+ */
   public function clearDataArr(array $arr)
   {
     if (!empty($arr) && is_array($arr)) {
@@ -34,6 +48,12 @@ class Validator
     }
   }
 
+ /*
+ * Validate name field
+ *
+ * @param val: check string
+ * @return: boolean
+ */
   public function checkForm($val)
   {
     $this->value = '';
@@ -45,6 +65,12 @@ class Validator
     }
   }
 
+ /*
+ * Validate password field
+ *
+ * @param val: check string
+ * @return: boolean
+ */
   public function checkPass($val)
   {
     $this->value = '';
@@ -56,6 +82,12 @@ class Validator
     }
   }
 
+ /*
+ * To positive number
+ *
+ * @param val: check string
+ * @return: integer
+ */
   public function numCheck($val)
   {
       return $this->value = abs((int)($val));
@@ -66,17 +98,22 @@ class Validator
     return $this->value;
   }
 
+ /*
+ * Validate e-mail
+ *
+ * @param val: check string
+ * @return: boolean
+ */
   public function checkEmail($val)
   {
     $this->value = '';
     $val = $this->clearData($val);
-    if (!filter_var($val, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($val, FILTER_VALIDATE_EMAIL))
+	{
       return false;
     } else {
       return true;
     }
   }
-
 }
-
 ?>

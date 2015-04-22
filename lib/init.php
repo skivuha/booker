@@ -22,7 +22,6 @@ function __autoload($class)
 	}
 	else
 	{
-		//throw new Exception('File for this class not exists');
 		Error404Controller::index();
 	}
 }

@@ -38,7 +38,7 @@ class Event
 		$dayOfWeek = date('w', $startTime);
 		if(6 == $dayOfWeek || 0 == $dayOfWeek)
 		{
-			$this->error['ERROR'] = 'Warrning, this day a weekend!'
+			$this->error['ERROR'] = 'Warrning, this day a weekend!';
 			return $this->error;
 		}
 		$myPdo = MyPdo::getInstance();

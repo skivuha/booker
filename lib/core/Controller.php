@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class: Controller
+ * Class: Base controller
  *
  */
 abstract class Controller
@@ -42,7 +42,7 @@ abstract class Controller
 		return $this->cookie->read('user2_timeFormat');
 	}
 
-	private function checkUser()
+	protected function checkUser()
 	{
 		return $this->userAuth = $this->check->getUserStatus();
 	}

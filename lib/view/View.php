@@ -1,9 +1,10 @@
 <?php
 
-/**
+ /*
  * Class: View
  *
  */
+
 class View
 {
 	private $forRender;
@@ -51,7 +52,8 @@ class View
 	{
 		foreach ($this->forRender as $key => $val)
 		{
-			$this->file = preg_replace('/%LANG_' . $key . '%/i', $val, $this->file);
+			$this->file = preg_replace('/%LANG_'.$key.'%/i',
+				$val, $this->file);
 		}
 	}
 

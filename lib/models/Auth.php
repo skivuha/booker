@@ -1,35 +1,38 @@
 <?php
 
-class Auth
-{
-	private $check;
-	private $encode;
-	private $error;
-	private $myPdo;
+/*
+ * Class: Auth
+ *
+ * Model a authentication of the system. Check user login and password with
+ * DB.
+ */
 
-	public function __construct()
-	{
-		$this->myPdo = MyPdo::getInstance();
-		$this->check = new Validator();
-		$this->encode = new Encode();
-		$this->cookie = new Cookie();
-		$this->session = Session::getInstance();
-	}
+class Auth extends Model
+{
+	private $error;
+
+	/*
+	 * Check date login and password from user form.
+	 *
+	 * @param var: flag from HomeController array
+	 * @return: true or array errors
+	 */
 	public function logon($var)
 	{
 		if (true === $var)
 		{
-			$data_post = $this->check->clearDataArr($_POST);
+			$data_post = $this->validatorObj->clearDataArr($_POST);
 			if ('' === $data_post['password'])
 			{
-				$this->error['ERRORPASS'] = 'Field is empty';
+				$this->error['ERRORPASS'] = ERROR_EMPTY;
 				$pass = false;
 			}
 			else
 			{
-				if (false === $this->check->checkPass($data_post['password']))
+				if (false === $this->validatorObj
+						->checkPass($data_post['password']))
 				{
-					$this->error['ERRORPASS'] = 'Wrong data';
+					$this->error['ERRORPASS'] = ERROR_WRONG_DATA;
 					$pass = false;
 				}
 				else
@@ -39,14 +42,15 @@ class Auth
 			}
 			if ('' === $data_post['name'])
 			{
-				$this->error['ERRORLOGIN'] = 'Field is empty';
+				$this->error['ERRORLOGIN'] = ERROR_EMPTY;
 				$name = false;
 			}
 			else
 			{
-				if (false === $this->check->checkForm($data_post['name']))
+				if (false === $this->validatorObj
+						->checkEmail($data_post['name']))
 				{
-					$this->error['ERRORLOGIN'] = 'Wrong data';
+					$this->error['ERRORLOGIN'] = ERROR_WRONG_DATA;
 					$name = false;
 				}
 				else
@@ -56,51 +60,45 @@ class Auth
 			}
 			if (false !== $pass && false !== $name)
 			{
-				$arr = $this->myPdo->select('id_employee, mail_employee,
-				 passwd_employee, key_employee, name_employee, role')
-					->table('employee')
-					->where(array('name_employee' => $name), array('='))
-					->query()
-					->commit();
+				$arr = $this->queryToDbObj->getUserAllDataByName($name);
 				if (empty($arr))
 				{
-					$this->error['ERRORSTATUS'] = 'Wrong name or password';
+					$this->error['ERRORSTATUS'] = ERROR_ACCESS;
 				}
 				else
 				{
 					$password = md5($arr[0]['key_employee'] . $pass . SALT);
 					if ($arr[0]['passwd_employee'] === $password)
 					{
-						$this->session->setSession('id_employee', $arr[0]['id_employee']);
-						$this->session->setSession('mail_employee',
-							$arr[0]['mail_employee']);
-						$this->session->setSession('name_employee',
-							$arr[0]['name_employee']);
-						$this->session->setSession('role',
-							md5($arr[0]['role']));
+						$this->sessionObj->
+						setSession('id_employee', $arr[0]['id_employee']);
+						$this->sessionObj->
+						setSession('mail_employee', $arr[0]['mail_employee']);
+						$this->sessionObj->
+						setSession('name_employee', $arr[0]['name_employee']);
+						$this->sessionObj->
+						setSession('role', md5($arr[0]['role']));
 						if (isset($data_post['remember'])
 							&& 'on' === $data_post['remember'])
 						{
-							$encode = new Encode();
-							$code_employee = $encode->generateCode($arr[0]['name_employee']);
-							$this->myPdo->update()
-								->table("employee SET code_employee = '$code_employee'")
-								->where(array('name_employee' => $name), array('='))
-								->query()
-								->commit();
-							$this->cookie->add('code_employee', $code_employee);
+							$code_employee = $this->encodeObj->
+							generateCode($arr[0]['name_employee']);
+							$this->queryToDbObj
+								->setUserCodeCookie($name, $code_employee);
+							$this->cookieObj
+								->add('code_employee', $code_employee);
 						}
 						return true;
 					}
 					else
 					{
-						$this->error['ERRORSTATUS'] = 'Wrong name or password';
+						$this->error['ERRORSTATUS'] = ERROR_ACCESS;
 					}
 				}
 			}
 		}
+
 		return $this->error;
 	}
 }
-
 ?>

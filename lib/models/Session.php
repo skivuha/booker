@@ -1,8 +1,10 @@
 <?php
-/**
+
+/*
  * Class: Session
  *
  */
+
 class Session
 {
     static $_instance;
@@ -22,11 +24,23 @@ class Session
         $this->error='';
     }
 
+	/*
+	 * Add session
+	 *
+	 * @param key: key of session
+	 * @param val: value of session
+	 */
     public function setSession($key, $val)
     {
         $_SESSION[$key]=$val;
     }
 
+ /*
+ * Read session
+ *
+ * @param key: key of session
+ * @return: value of current session key or false
+ */
     public function getSession($key)
     {
         if(isset($_SESSION[$key]))
@@ -39,6 +53,11 @@ class Session
         }
     }
 
+	 /*
+	 * Remove session
+	 *
+	 * @param key: key of session
+	 */
     public function removeSession($key)
     {
         unset($_SESSION[$key]);
