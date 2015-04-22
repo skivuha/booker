@@ -34,6 +34,7 @@ class CalendarController extends Controller
 		$cal = new Calendar();
 		$cal->setFirstDay($this->getFirstDay());
 		$cal->setTimeFormat($this->getTimeFormat());
+		$cal->setUserRole($this->userRole);
 		$getParam = false;
 		$data = Router::getInstance();
 		$params = $data->getParams();

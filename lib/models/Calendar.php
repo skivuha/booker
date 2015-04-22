@@ -193,8 +193,6 @@ class Calendar
 		//	$this->calendar['ADMIN'] = 'disabled';
 		//}
 
-
-
 		$this->calendar['HEADCALENDAR'] = $head;
 		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
 			.$this->subMonth;

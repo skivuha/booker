@@ -24,6 +24,12 @@ abstract class Controller
 		$this->arrayLang();
 	}
 
+	protected function getRoom()
+	{
+		$this->room = $this->session->getSession('room');
+		return $this->room;
+	}
+
 	protected function getFirstDay()
 	{
 		$this->cookie = new Cookie();

@@ -7,6 +7,7 @@ class Event
 	private $dArray;
 	private $userRole;
 	private $recurent;
+	private $room;
 
 
 	public function checkDateNoRecursion()
@@ -121,7 +122,6 @@ class Event
 		$session = Session::getInstance();
 		$room = $session->getSession('room');
 
-
 		$myPdo = MyPdo::getInstance();
 		if('weekly' == $this->data['recuring']
 			|| 'bi-weekly' == $this->data['recuring']
@@ -141,6 +141,11 @@ class Event
 			{
 				$interval = 0;
 				$period = 1;
+			}
+
+			if(1>$duration || 4<$duration || 28<$duration*$interval)
+			{
+				$duration = 0;
 			}
 			for($i = 0; $i <= $duration; $i++)
 			{
@@ -264,6 +269,7 @@ class Event
 		$myPdo = MyPdo::getInstance();
 		$id_appointment = $this->data;
 		$session = Session::getInstance();
+		$id_employee = $session->getSession('id_employee');
 		$currentEvent = $myPdo->select('*')
 			->table('appointments')
 			->where(array('id_appointment' => $id_appointment),
@@ -329,7 +335,9 @@ class Event
 		$this->dArray['NOTES'] = $currentEvent[0]['description'];
 		$this->dArray['SUBMITTED'] = $currentEvent[0]['submitted'];
 		$this->dArray['ID'] = $id_appointment;
-		if($currentTime > $currentEvent[0]['start'])
+		if($currentTime > $currentEvent[0]['start']
+			||(false == $this->userRole
+				&& $currentEvent[0]['id_employee'] != $id_employee))
 		{
 			$this->dArray['ACTIVE'] = 'disabled';
 		}
@@ -405,6 +413,7 @@ class Event
 		$myPdo = MyPdo::getInstance();
 		$updateData = $this->data;
 		$session = Session::getInstance();
+		$room = $session->getSession('room');
 		if ( ! isset($this->recurent))
 		{
 			$currentDay = $updateData['start'];
@@ -421,7 +430,15 @@ class Event
 			$startDay = mktime(0, 0, 0, $mon, $day, $year);
 			$endDay = mktime(23, 59, 59, $mon, $day, $year);
 
-			$check = $myPdo->select('*')->table('appointments')->where(array('start' => $startDay, 'end' => $endDay, 'id_appointment' => $updateData['update']), array('>=', '<=', '!='))->query()->commit();
+			$check = $myPdo->select('*')
+				->table('appointments')
+				->where(array('start' => $startDay,
+											'end' => $endDay,
+											'id_appointment' => $updateData['update'],
+											'id_room' => $room),
+					array('>=', '<=', '!=', '='))
+				->query()
+				->commit();
 			if (isset($check))
 			{
 				$cnt = 0;
@@ -494,8 +511,9 @@ class Event
 
 				$check = $myPdo->select('*')->table('appointments')
 					->where(array('start' => $startDay, 'end' => $endDay,
-												'id_appointment' => $id_appointment),
-						array('>=', '<=', '!='))
+												'id_appointment' => $id_appointment,
+												'id_room' => $room),
+						array('>=', '<=', '!=', '='))
 					->query()
 					->commit();
 

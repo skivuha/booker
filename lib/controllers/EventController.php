@@ -18,6 +18,7 @@ class EventController extends Controller
 	{
 		$action = $this->valid->clearDataArr($_POST);
 		$this->event->setData($action);
+		$this->event->setRoom($this->room);
 		if('false' == $action['recuringon'])
 		{
 			$status = $this->event->checkDateNoRecursion();
@@ -59,6 +60,8 @@ class EventController extends Controller
 
 	public function updateAction()
 	{
+		$this->event->setRoom($this->room);
+
 		$this->event->userRole($this->userRole);
 		$param = $this->data->getParams();
 		$name = $this->valid->clearData($param['do']);
