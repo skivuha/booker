@@ -35,6 +35,9 @@ define('LANG', "/usr/home//user2/public_html/PHP/booker/templates/lang/");
 */
 //encode
 define('STRING_LENGHT', 10);
+//room
+define('START_ROOM', 0);
+define('END_ROOM', 3);
 //error
 define('ERROR_EMPTY', 'Field is empty');
 define('ERROR_WRONG_DATA', 'Wrong data');

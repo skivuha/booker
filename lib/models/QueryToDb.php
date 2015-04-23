@@ -73,6 +73,11 @@ class QueryToDb
 	return $result;
 	}
 
+ /*
+ * Select all  id, mail, name from employee
+ *
+ * @return: array
+ */
 	public function getEmployeeList()
 	{
 		$result = $this->myPdoObj
@@ -84,6 +89,11 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Delete selected employee by id
+ *
+ * @return: boolean
+ */
 	public function deleteEmployee($id_employee)
 	{
 		$result = $this->myPdoObj
@@ -96,6 +106,12 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Select employee by new e-mail
+ *
+ * @param email: e-mail new employee
+ * @return: array
+ */
 	public function getEmployeeForCheckExists($email)
 	{
 		$result = $this->myPdoObj
@@ -108,6 +124,15 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Insert new employee to DB
+ *
+ * @param name: name new employee
+ * @param pass: password new employee
+ * @param key_employee: unique key new employee
+ * @param email: e-mail new employee
+ * @return: boolean
+ */
 	public function setNewEmployee($name, $pass, $email, $key_employee)
 	{
 		$result = $this->myPdoObj
@@ -121,6 +146,13 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Update selected employee data
+ *
+ * @param array: array of data to commit change, can be password, e-mail, name
+ * @param id_employee: id selected employee
+ * @return: boolean
+ */
 	public function setEmployeeNewData($array, $id_employee)
 	{
 		$result = $this->myPdoObj
@@ -134,12 +166,35 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Select e-mail and name from employee
+ *
+ * @param id_employee: id selected employee
+ * @return: array
+ */
 	public function getEmployeeById($id_employee)
 	{
 		$result = $this->myPdoObj
 			->select('mail_employee, name_employee')
 			->table('employee')
 			->where(array('id_employee' => $id_employee), array('='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+ /*
+ * Select number of room choise in config file
+ *
+ * @return: array
+ */
+	public function getCalendarRoomList()
+	{
+		$result = $this->myPdoObj
+			->select('id_room, name_room')
+			->table('rooms')
+			->limit(START_ROOM, END_ROOM)
 			->query()
 			->commit();
 

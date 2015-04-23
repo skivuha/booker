@@ -3,8 +3,7 @@
  /*
  * Class: Employee
  *
- * Model admin page.
- *
+ * Model for admin page.
  */
 
 class Employee extends model
@@ -14,6 +13,11 @@ class Employee extends model
 	private $dataArray;
 	private $error;
 
+ /*
+ * Select all employee data from base
+ *
+ * @return: array
+ */
 	public function getEmployee()
 	{
 		$arr = $this->queryToDbObj->getEmployeeList();
@@ -21,16 +25,29 @@ class Employee extends model
 		return $arr;
 	}
 
+ /*
+ * Set flag
+ */
 	public function setFlag($var)
 	{
 		$this->flag = $var;
 	}
 
+ /*
+ * Set data
+ *
+ * @param arr: data array
+ */
 	public function setDataArray(array $arr)
 	{
 		$this->dataArray = $arr;
 	}
 
+ /*
+ * Set current action
+ *
+ * @param value: name of action
+ */
 	public function setAction($value)
 	{
 		if('delete' == $value)
@@ -46,19 +63,32 @@ class Employee extends model
 			return $this->addEmployee();
 		}
 
+		return true;
 	}
+
+ /*
+ * Set current action
+ *
+ * @param value: name of action
+ */
 	private function deleteEmployee()
 	{
 		if (true === $this->flag)
 		{
 			$id_employee = $this->data->getParams();
 			$rez = $this->queryToDbObj->deleteEmployee($id_employee['id']);
+
 			return $rez;
 		}
 
 		return false;
 	}
 
+ /*
+ * Add new employee
+ *
+ * @return: array
+ */
 	private function addEmployee()
 	{
 		if (false === $this->flag)
@@ -148,8 +178,14 @@ class Employee extends model
 		{
 			return $this->error;
 		}
+		return true;
 	}
 
+ /*
+ * Edit new employee
+ *
+ * @return: array
+ */
 	private function editEmployee()
 	{
 		if (true === $this->flag)
@@ -194,5 +230,4 @@ class Employee extends model
 		return $arr;
 	}
 }
-
 ?>

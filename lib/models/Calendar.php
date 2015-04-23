@@ -1,5 +1,5 @@
 <?php
-class Calendar
+class Calendar extends Model
 {
 	private $currentMonth;
 	private $newMonth;
@@ -305,6 +305,11 @@ class Calendar
 			.$value['name_employee'].'</option>';
 			}
 		}
+	}
+
+	public function getListRoom()
+	{
+		return $this->queryToDbObj->getCalendarRoomList();
 	}
 }
 ?>

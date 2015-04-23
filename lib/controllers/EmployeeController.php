@@ -4,7 +4,6 @@
  * Class: EmployeeController
  *
  * Admin page. Only admin can run this page. Default page load by index action.
- *
  */
 
 class EmployeeController extends Controller
@@ -25,10 +24,9 @@ class EmployeeController extends Controller
 		$this->arrayLang();
 	}
 
-/*
+ /*
  * Default action. Check POST array from form. If isset POST, check data and
  * if all data valid, add new employee. Else show errors massage.
- *
  */
 	public function indexAction()
 	{
@@ -38,7 +36,6 @@ class EmployeeController extends Controller
 			$this->employee->setDataArray($addEmployee);
 			$this->employee->setFlag(false);
 			$employee = $this->employee->setAction('add');
-			var_dump($employee);
 			$this->view->addToReplace($employee);
 		}
 
@@ -50,7 +47,6 @@ class EmployeeController extends Controller
 	 /*
 	 * Delete action. Delete employee and if method  DB return true,
 	 * send header location Employee/index/.
-	 *
 	 */
 	public function deleteAction()
 	{
@@ -68,7 +64,6 @@ class EmployeeController extends Controller
 
  /*
  * Edit action. Edit selected employee. If all update, send header.
- *
  */
 	public function editAction()
 	{
@@ -92,13 +87,12 @@ class EmployeeController extends Controller
 
  /*
  * Create list employee
- *
  */
 	private function listEmployee()
 	{
 		$employees = $this->employee->getEmployee();
 		$cnt = 1;
-		foreach ($employees as $key => $val)
+		foreach($employees as $key => $val)
 		{
 			$arr = array('CNT' => $cnt,
 						 'EMPLOYEE_NAME' => $val['name_employee'],
@@ -113,7 +107,6 @@ class EmployeeController extends Controller
 
  /*
  * Send view array to replace placeholder and print page
- *
  */
 	private function arrayToPrint()
 	{

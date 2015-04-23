@@ -2,6 +2,8 @@
 class CalendarController extends Controller
 {
 
+	private $arrRender;
+
 	public function __construct()
 	{
 		$this->accessToCalendar();
@@ -25,6 +27,8 @@ class CalendarController extends Controller
 		$view->addToReplace($this->langArr);
 
 		$view->setTemplateFile('calendar')->templateRenderContent();
+		$this->listRoom();
+		$view->addToReplace($this->arrRender);
 		$view->setTemplateFile('workpage')->templateRenderContent();
 		$view->setTemplateFile('index')->templateRender();
 	}
@@ -52,6 +56,8 @@ class CalendarController extends Controller
 		$view->addToReplace($data);
 		$view->addToReplace($this->langArr);
 		$view->setTemplateFile('calendar')->templateRenderContent();
+		$this->listRoom();
+		$view->addToReplace($this->arrRender);
 		$view->setTemplateFile('workpage')->templateRenderContent();
 		$view->setTemplateFile('index')->templateRender();
 	}
@@ -60,6 +66,21 @@ class CalendarController extends Controller
 		session_destroy();
 		$this->cookie->remove('code_employee');
 		header('Location: '.PATH.'');
+	}
+
+	private function listRoom()
+	{
+		$cal = new Calendar();
+		$view = new View;
+		$room = $cal->getListRoom();
+		foreach($room as $key => $val)
+		{
+			$arr = array('ROOM_ID' => $val['id_room'],
+						 'ROOM_NAME' => $val['name_room']);
+			$view->addToReplace($arr);
+			$this->arrRender['ROOMLIST'] .= $view->
+			setTemplateFile('room')->renderFile();
+		}
 	}
 }
 ?>
