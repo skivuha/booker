@@ -430,7 +430,6 @@ class Event
 			$arrayStartTime = explode(':', $updateData['starttime']);
 			$arrayEndTime = explode(':', $updateData['endtime']);
 
-
 			$startTimeUpdate = mktime($arrayStartTime[0], $arrayStartTime[1], 0, $mon, $day, $year);
 			$endTimeUpdate = mktime($arrayEndTime[0], $arrayEndTime[1], 0, $mon, $day, $year);
 			$startDay = mktime(0, 0, 0, $mon, $day, $year);
@@ -523,6 +522,7 @@ class Event
 					->query()
 					->commit();
 
+
 				if (isset($check))
 				{
 					$cnt = 0;
@@ -534,6 +534,7 @@ class Event
 						}
 					}
 				}
+
 
 				if (count($check) != $cnt)
 				{
@@ -573,7 +574,14 @@ class Event
 				}
 			}
 		}
+		if(empty($this->error))
+		{
+			return true;
+		}
+		else
+		{
 		return $this->error;
+		}
 	}
 
 
