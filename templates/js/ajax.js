@@ -9,6 +9,7 @@ function addEvent() {
         method: 'POST',
         data: $("#modal").serialize()
     }).then(function(data){
+        console.log(data);
         var objJ = JSON.parse(data);
         if(objJ[0] == true) {
             $('#myModal').modal('hide');

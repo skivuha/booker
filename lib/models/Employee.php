@@ -75,8 +75,12 @@ class Employee extends model
 	{
 		if (true === $this->flag)
 		{
+			$currentTime = time();
 			$id_employee = $this->data->getParams();
 			$rez = $this->queryToDbObj->deleteEmployee($id_employee['id']);
+			$this->queryToDbObj
+				->deleteAppointmentsCurrentEmployee($id_employee['id'],
+					$currentTime);
 
 			return $rez;
 		}

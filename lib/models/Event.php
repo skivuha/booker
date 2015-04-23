@@ -1,108 +1,121 @@
 <?php
-class Event
+class Event extends Model
 {
-	private $data;
+	private $dataArray;
 	private $error;
 	private $id;
 	private $dArray;
 	private $userRole;
 	private $recurent;
 	private $room;
+	private $employee;
+	private $selectedDay;
+	private $selectedMonth;
+	private $selectedYear;
+	private $selectedStartHour;
+	private $selectedStartMinute;
+	private $selectedEndHour;
+	private $selectedEndMinute;
+	private $description;
+	private $currentTime;
 
+	private function dataFromPost()
+	{
+		$this->employee = $this->dataArray['employeename'];
+		$this->selectedDay = (int)$this->dataArray['selectedday'];
+		$this->selectedMonth = ((int)$this->dataArray['selectedmonth'])+1;
+		$this->selectedYear = (int)$this->dataArray['selectedyear'];
+		$this->selectedStartHour = (int)$this->dataArray['starthour'];
+		$this->selectedStartMinute = (int)$this->dataArray['startmin'];
+		$this->selectedEndHour = (int)$this->dataArray['endhour'];
+		$this->selectedEndMinute = (int)$this->dataArray['endmin'];
+		$this->description = $this->dataArray['desc'];
+		$this->currentTime = time();
+		$this->room = $this->sessionObj->getSession('room');
+	}
+
+	private function time($hour, $minute, $month, $day, $year)
+	{
+		return mktime($hour, $minute, 0, $month, $day, $year);
+	}
+
+	private function startDay($month, $day, $year)
+	{
+		return mktime(0, 0, 0, $month, $day, $year);
+	}
+
+	private function endDay($month, $day, $year)
+	{
+		return mktime(23, 59, 59, $month, $day, $year);
+	}
 
 	public function checkDateNoRecursion()
 	{
-		$employee = $this->data['employeename'];
-		$selectedDay = (int)$this->data['selectedday'];
-		$selectedMonth = ((int)$this->data['selectedmonth'])+1;
-		$selectedYear = (int)$this->data['selectedyear'];
-		$selectedStartHour = (int)$this->data['starthour'];
-		$selectedStartMinute = (int)$this->data['startmin'];
-		$selectedEndHour = (int)$this->data['endhour'];
-		$selectedEndMinute = (int)$this->data['endmin'];
-		$description = $this->data['desc'];
-
-		$currentTime = time();
-		$startTime = mktime($selectedStartHour, $selectedStartMinute, 0,
-			$selectedMonth, $selectedDay, $selectedYear);
-		$endTime = mktime($selectedEndHour, $selectedEndMinute, 0,
-			$selectedMonth, $selectedDay, $selectedYear);
-		$startDay = mktime(0, 0, 0,
-			$selectedMonth, $selectedDay, $selectedYear);
-		$endDay = mktime(23, 59, 59,
-			$selectedMonth, $selectedDay, $selectedYear);
-
-		$session = Session::getInstance();
-		$room = $session->getSession('room');
+		$this->dataFromPost();
+		$startTime = $this->time($this->selectedStartHour,
+			$this->selectedStartMinute,$this->selectedMonth,
+			$this->selectedDay, $this->selectedYear);
+		$endTime = $this->time($this->selectedEndHour,
+			$this->selectedEndMinute,$this->selectedMonth,
+			$this->selectedDay, $this->selectedYear);
+		$startDay = $this->startDay($this->selectedMonth, $this->selectedDay,
+			$this->selectedYear);
+		$endDay = $this->endDay($this->selectedMonth, $this->selectedDay,
+			$this->selectedYear);
 
 		$dayOfWeek = date('w', $startTime);
 		if(6 == $dayOfWeek || 0 == $dayOfWeek)
 		{
-			$this->error['ERROR'] = 'Warrning, this day a weekend!';
+			$this->error['ERROR'] = ERROR_WEEKEND;
 			return $this->error;
 		}
-		$myPdo = MyPdo::getInstance();
-		$eventCurrentDay = $myPdo->select('*')
-			->table('appointments')
-			->where(array('start' => $startDay,
-				'end'=> $endDay, 'id_room'=> $room),
-				array('>=','<=','='))
-			->query()
-			->commit();
+		$eventCurrentDay = $this->queryToDbObj->getEventSelectedDayAndRoom(
+			$startDay, $endDay, $this->room);
 
-	if(empty($eventCurrentDay))
-	{
-		if($endTime > $startTime
-			&& $currentTime < $startTime
-			&& $startTime != $endTime)
+		if(empty($eventCurrentDay))
 		{
-			 $arr = $myPdo->insert()
-				->table("appointments")
-				->set(array('description'=>$description, 'id_employee'=> $employee,
-					'start'=>$startTime, 'end'=>$endTime,
-						'id_room'=>$room,	'recursion'=>'0'))
-				->query()
-				->commit();
-			return $arr;
+			if($endTime > $startTime
+				&& $this->currentTime < $startTime
+				&& $startTime != $endTime)
+			{
+				$arr = $this->queryToDbObj->setEvent($this->description,
+					$this->employee, $startTime, $endTime, $this->room);
+				return $arr;
+			}
+			else
+			{
+				$this->error['ERROR_DATA'] = ERROR_WRONG_DATA;
+				return $this->error;
+			}
 		}
-		else
-		{
-			$this->error['ERROR_DATA'] = 'Wrong date!';
-			return $this->error;
-		}
-	}
 		else
 		{
 			$cnt = 0;
 			if ($endTime > $startTime
-				&& $currentTime < $startTime
+				&& $this->currentTime < $startTime
 				&& $startTime != $endTime)
 			{
 				foreach ($eventCurrentDay as $key => $value)
 				{
-					if($value['end'] <= $startTime || $value['start'] >= $endTime)
+					if($value['end'] <= $startTime
+						|| $value['start'] >= $endTime)
 					{
 						$cnt++;
 					}
 					else
 					{
-						$this->error['ERROR_DATA'] ='Sorry, this time alredy busy!';
+						$this->error['ERROR_DATA'] = ERROR_BUSY;
 					}
 				}
 			}
 			else
 			{
-				$this->error['ERROR_DATA'] ='Wrong date!';
+				$this->error['ERROR_DATA'] = ERROR_WRONG_DATA;
 			}
 			if(count($eventCurrentDay) == $cnt)
 			{
-				$arr = $myPdo->insert()
-					->table("appointments")
-					->set(array('description'=>$description, 'id_employee'=> $employee,
-											'start'=>$startTime, 'end'=>$endTime,
-											'id_room'=>$room,	'recursion'=>'0'))
-					->query()
-					->commit();
+				$this->queryToDbObj->setEvent($this->description,
+					$this->employee, $startTime, $endTime, $this->room);
 				return true;
 			}
 			else
@@ -114,26 +127,14 @@ class Event
 
 	public function checkDateRecursion()
 	{
-		$duration = (int)$this->data['duration'];
-		$employee = $this->data['employeename'];
-		$selectedDay = (int)$this->data['selectedday'];
-		$selectedMonth = ((int)$this->data['selectedmonth']) + 1;
-		$selectedYear = (int)$this->data['selectedyear'];
-		$selectedStartHour = (int)$this->data['starthour'];
-		$selectedStartMinute = (int)$this->data['startmin'];
-		$selectedEndHour = (int)$this->data['endhour'];
-		$selectedEndMinute = (int)$this->data['endmin'];
-		$description = $this->data['desc'];
-		$currentTime = time();
-		$session = Session::getInstance();
-		$room = $session->getSession('room');
+		$duration = (int)$this->dataArray['duration'];
+		$this->dataFromPost();
 
-		$myPdo = MyPdo::getInstance();
-		if('weekly' == $this->data['recuring']
-			|| 'bi-weekly' == $this->data['recuring']
-			|| 'monthly' == $this->data['recuring'])
+		if('weekly' == $this->dataArray['recuring']
+			|| 'bi-weekly' == $this->dataArray['recuring']
+			|| 'monthly' == $this->dataArray['recuring'])
 		{
-			if('weekly' == $this->data['recuring'])
+			if('weekly' == $this->dataArray['recuring'])
 			{
 				$interval = 7;
 				$period = 0;
@@ -143,7 +144,7 @@ class Event
 				$interval = 14;
 				$period = 0;
 			}
-			if('monthly' == $this->data['recuring'])
+			if('monthly' == $this->dataArray['recuring'])
 			{
 				$interval = 0;
 				$period = 1;
@@ -155,55 +156,56 @@ class Event
 			}
 			for($i = 0; $i <= $duration; $i++)
 			{
-				$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
-					$selectedMonth + $period*$i, $selectedDay + $interval*$i, $selectedYear);
-				$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
-					$selectedMonth + $period*$i, $selectedDay + $interval*$i,
-					$selectedYear);
-				$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
-					$selectedDay + $interval*$i, $selectedYear);
-				$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
-					$selectedDay + $interval*$i, $selectedYear);
+				$startTime[$i] = $this->time($this->selectedStartHour,
+					$this->selectedStartMinute,$this->selectedMonth
+					+ $period*$i, $this->selectedDay + $interval*$i,
+					$this->selectedYear);
+				$endTime[$i] = $this->time($this->selectedEndHour,
+					$this->selectedEndMinute,$this->selectedMonth + $period*$i,
+					$this->selectedDay + $interval*$i, $this->selectedYear);
+				$startDay = $this->startDay($this->selectedMonth,
+					$this->selectedDay,	$this->selectedYear);
+				$endDay = $this->endDay($this->selectedMonth,
+					$this->selectedDay,	$this->selectedYear);
 
 				if(6 == date('w', $startTime[$i]))
 				{
-					$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
-						$selectedMonth + $period*$i, $selectedDay + 2, $selectedYear);
-					$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
-						$selectedMonth + $period*$i, $selectedDay + 2, $selectedYear);
-					$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
-						$selectedDay + 2, $selectedYear);
-					$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
-						$selectedDay + 2, $selectedYear);
+					$startTime[$i] = $this->time($this->selectedStartHour,
+						$this->selectedStartMinute,$this->selectedMonth
+						+ $period*$i, $this->selectedDay + 2,
+						$this->selectedYear);
+					$endTime[$i] = $this->time($this->selectedEndHour,
+						$this->selectedEndMinute,$this->selectedMonth
+						+ $period*$i,
+						$this->selectedDay + 2, $this->selectedYear);
+					$startDay = $this->startDay($this->selectedMonth,
+						$this->selectedDay + 2,	$this->selectedYear);
+					$endDay = $this->endDay($this->selectedMonth,
+						$this->selectedDay + 2,	$this->selectedYear);
 				}elseif(0 == date('w', $startTime[$i]))
 				{
-					$startTime[$i] = mktime($selectedStartHour, $selectedStartMinute, 0,
-						$selectedMonth + 1*$i, $selectedDay + 1, $selectedYear);
-					$endTime[$i] = mktime($selectedEndHour, $selectedEndMinute, 0,
-						$selectedMonth + 1*$i, $selectedDay + 1, $selectedYear);
-
-					$startDay = mktime(0, 0, 0, $selectedMonth + $period*$i,
-						$selectedDay + 1, $selectedYear);
-					$endDay = mktime(23, 59, 59, $selectedMonth + $period*$i,
-						$selectedDay + 1, $selectedYear);
+					$startTime[$i] = $this->time($this->selectedStartHour,
+						$this->selectedStartMinute,$this->selectedMonth
+						+ $period*$i, $this->selectedDay + 1,
+						$this->selectedYear);
+					$endTime[$i] = $this->time($this->selectedEndHour,
+						$this->selectedEndMinute,$this->selectedMonth
+						+ $period*$i,
+						$this->selectedDay + 1, $this->selectedYear);
+					$startDay = $this->startDay($this->selectedMonth,
+						$this->selectedDay + 1,	$this->selectedYear);
+					$endDay = $this->endDay($this->selectedMonth,
+						$this->selectedDay + 1,	$this->selectedYear);
 				}
-
-
-
-				$eventCurrentDay = $myPdo->select('*')
-					->table('appointments')
-					->where(array('start' => $startDay,
-												'end' => $endDay,
-												'id_room' => $room),
-						array('>=', '<=', '='))
-					->query()
-					->commit();
-
+				$eventCurrentDay = $this->queryToDbObj
+					->getEventSelectedDayAndRoom($startDay, $endDay,
+						$this->room);
 				$cnt = 0;
+
 				if(!empty($eventCurrentDay))
 				{
 					if ($endTime[$i] > $startTime[$i]
-						&& $currentTime < $startTime[$i]
+						&& $this->currentTime < $startTime[$i]
 						&& $startTime[$i] != $endTime[$i])
 					{
 						foreach ($eventCurrentDay as $key => $value)
@@ -217,13 +219,13 @@ class Event
 					}
 					else
 					{
-						$this->error['ERROR_DATA'] ='Wrong date!';
+						$this->error['ERROR_DATA'] = ERROR_WRONG_DATA;
 					}
 				}
 				else
 				{
 					if ($endTime[$i] < $startTime[$i]
-						|| $currentTime > $startTime[$i]
+						|| $this->currentTime > $startTime[$i]
 						|| $startTime[$i] == $endTime[$i])
 					{
 						$cnt++;
@@ -232,66 +234,43 @@ class Event
 				if(count($eventCurrentDay) != $cnt)
 				{
 					$i++;
-					$this->error['ERROR_DATA'] ='Wrong time on '.$i.' recursion!';
+					$this->error['ERROR_DATA'] ='Wrong time on '.$i.'
+					recursion!';
 				}
 			}
-
 			$this->id = 0;
 			if(empty($this->error))
 			{
-			for($i = 0; $i <= $duration; $i++)
-			{
-				$myPdo->insert()
-					->table("appointments")
-					->set(array('description' => $description,
-											'id_employee' => $employee,
-											'start' => $startTime[$i],
-											'end' => $endTime[$i],
-											'id_room' => $room,
-											'recursion' => $this->id))
-					->query()
-					->commit();
-				if(0 == $i)
+				for($i = 0; $i <= $duration; $i++)
 				{
-					$this->id = $myPdo->lastId;
+					$this->queryToDbObj->setEventWithRecur
+				($this->description,
+						$this->employee, $startTime[$i], $endTime[$i],
+						$this->room, $this->id);
+					if(0 == $i)
+					{
+						$this->id = $this->queryToDbObj->getLastId();
+					}
 				}
-			}
-				 $myPdo->update()
-					->table("appointments")
-					->set(array('recursion'=> $this->id))
-					->where(array('id_appointment'=>$this->id), array('='))
-					->query()
-					->commit();
+				$this->queryToDbObj->setParentRecur($this->id);
+
 				return true;
 			}
 		}
 		return $this->error;
 	}
 
-
-
 	public function detailsEvent()
 	{
-		$myPdo = MyPdo::getInstance();
-		$id_appointment = $this->data;
-		$session = Session::getInstance();
-		$id_employee = $session->getSession('id_employee');
-		$currentEvent = $myPdo->select('*')
-			->table('appointments')
-			->where(array('id_appointment' => $id_appointment),
-				array('='))
-			->query()
-			->commit();
+		$id_appointment = $this->dataArray;
+		$id_employee = $this->sessionObj->getSession('id_employee');
+		$currentEvent = $this->queryToDbObj->getEventById($id_appointment);
 
-		$name_employee = $myPdo->select('name_employee, id_employee')
-			->table('employee')
-			->where(array('id_employee' => $currentEvent[0]['id_employee']),
-				array('='))
-			->query()
-			->commit();
+		$name_employee = $this->queryToDbObj
+			->getEmployeeById($currentEvent[0]['id_employee']);
 
 		$startTime = date('H', $currentEvent[0]['start']).
-		':'.date('i', $currentEvent[0]['start']);
+			':'.date('i', $currentEvent[0]['start']);
 
 		$endTime = date('H', $currentEvent[0]['end']).
 			':'.date('i', $currentEvent[0]['end']);
@@ -320,21 +299,19 @@ class Event
 		}
 		else
 		{
-			$employee = $myPdo->select('name_employee, id_employee')
-				->table('employee')
-				->where(array('name_employee' => 'root'), array('!='))
-				->query()
-				->commit();
+			$employee = $this->queryToDbObj->getEmployeeListExeptRoot();
 			foreach($employee as $key => $value)
 			{
 				$thisUser ='';
-				if($name_employee[0]['name_employee'] == $value['name_employee'])
+				if($name_employee[0]['name_employee']
+					== $value['name_employee'])
 				{
 					$thisUser = 'selected';
 				}
-				$listUser .= '<option value="' . $value['id_employee'] . '" '.$thisUser
-					.'>' .
-					$value['name_employee'] . '</option>';
+				$listUser .= '<option value="'.$value['id_employee']
+					.'" '.$thisUser
+					.'>'.
+					$value['name_employee'].'</option>';
 			}
 		}
 		$this->dArray['WHO'] = $listUser;
@@ -357,18 +334,16 @@ class Event
 
 	public function deleteEvent()
 	{
-		$session = Session::getInstance();
 		$currentTime = time();
-		$myPdo = MyPdo::getInstance();
-		$id_appointment = $this->data;
+		$id_appointment = $this->dataArray;
 		$updateData = $_POST['empl'];
 		if(!isset($this->recurent))
 		{
 			if(true === $this->userRole
-				|| $updateData == $session->getSession('id_employee'))
+				|| $updateData == $this->sessionObj->getSession('id_employee'))
 			{
-				$rez = $myPdo->delete()->table('appointments')->where(array('id_appointment' => $id_appointment, 'start' => $currentTime), array('=', '>='))->query()->commit();
-
+				$rez = $this->queryToDbObj
+					->deleteEventNoRecur($id_appointment, $currentTime);
 				return $rez;
 			}
 			else
@@ -378,36 +353,17 @@ class Event
 		}
 		else
 		{
-			/*$allRecurEvent = $myPdo->select('id_appointment')
-				->table('appointments')
-				->where(array('recursion' => $this->recurent, 'start' => $currentTime),
-					array('=', '>='))
-				->query()
-				->commit();
-			foreach($allRecurEvent as $value)
-			{
-				$myPdo->delete()
-					->table('appointments')
-					->where(array('id_appointment'=>$value['id_appointment']),array('='))
-					->query()
-					->commit();
-			}
-			return true;*/
 			if(true === $this->userRole
-				|| $updateData == $session->getSession('id_employee'))
+				|| $updateData == $this->sessionObj->getSession('id_employee'))
 			{
-			$myPdo->delete()
-				->table('appointments')
-				->where(array('recursion'=>$this->recurent,
-											'start'=>$currentTime),array('=','>='))
-				->query()
-				->commit();
+				$this->queryToDbObj
+					->deleteEventWithRecur($this->recurent, $currentTime);
 
-		return true;
+				return true;
 			}
 			else
 			{
-				$this->error['ERROR_DATA'] = 'Access denied!';
+				$this->error['ERROR_DATA'] = ERROR_ACCESS;
 			}
 		}
 		return $this->error;
@@ -416,11 +372,8 @@ class Event
 	public function updateEvent()
 	{
 		$currentTime = time();
-		$myPdo = MyPdo::getInstance();
-		$updateData = $this->data;
-		$session = Session::getInstance();
-		$room = $session->getSession('room');
-		if ( ! isset($this->recurent))
+		$updateData = $this->dataArray;
+		if (!isset($this->recurent))
 		{
 			$currentDay = $updateData['start'];
 			$day = date('j', $currentDay);
@@ -430,26 +383,23 @@ class Event
 			$arrayStartTime = explode(':', $updateData['starttime']);
 			$arrayEndTime = explode(':', $updateData['endtime']);
 
-			$startTimeUpdate = mktime($arrayStartTime[0], $arrayStartTime[1], 0, $mon, $day, $year);
-			$endTimeUpdate = mktime($arrayEndTime[0], $arrayEndTime[1], 0, $mon, $day, $year);
-			$startDay = mktime(0, 0, 0, $mon, $day, $year);
-			$endDay = mktime(23, 59, 59, $mon, $day, $year);
+			$startTimeUpdate = mktime($arrayStartTime[0], $arrayStartTime[1],
+				0, $mon, $day, $year);
+			$endTimeUpdate = mktime($arrayEndTime[0], $arrayEndTime[1],
+				0, $mon, $day, $year);
+			$startDay = $this->startDay($mon, $day, $year);
+			$endDay = $this->endDay($mon, $day, $year);
 
-			$check = $myPdo->select('*')
-				->table('appointments')
-				->where(array('start' => $startDay,
-											'end' => $endDay,
-											'id_appointment' => $updateData['update'],
-											'id_room' => $room),
-					array('>=', '<=', '!=', '='))
-				->query()
-				->commit();
+			$check = $this->queryToDbObj->getEventFromDay($startDay,
+				$endDay, $updateData['update'], $this->room);
+
 			if (isset($check))
 			{
 				$cnt = 0;
 				foreach ($check as $key => $value)
 				{
-					if ($value['end'] <= $startTimeUpdate || $value['start'] >= $endTimeUpdate)
+					if ($value['end'] <= $startTimeUpdate
+						|| $value['start'] >= $endTimeUpdate)
 					{
 						$cnt ++;
 					}
@@ -458,47 +408,43 @@ class Event
 
 			if (count($check) != $cnt)
 			{
-				$this->error['ERROR_DATA'] = 'Sorry, this time alredy busy!';
+				$this->error['ERROR_DATA'] = ERROR_BUSY;
 			}
 			else
 			{
-				if ($currentTime < $startTimeUpdate && $currentTime < $currentDay &&
-					$startTimeUpdate < $endTimeUpdate)
+				if ($currentTime < $startTimeUpdate
+					&& $currentTime < $currentDay
+					&& $startTimeUpdate < $endTimeUpdate)
 				{
 					if(true === $this->userRole
-						|| $updateData['employee'] == $session->getSession
-						('id_employee'))
+						|| $updateData['employee'] ==
+						$this->sessionObj->getSession('id_employee'))
 					{
-						$myPdo->update()->table("appointments")
-							->set(array('description' => $updateData['description'],
-													'id_employee' => $updateData['employee'],
-													'start' => $startTimeUpdate,
-													'end' => $endTimeUpdate))
-							->where(array('id_appointment' => $updateData['update']),
-								array('='))
-							->query()
-							->commit();
+						$this->queryToDbObj->setNewDataInEvent
+						($updateData['description'],
+							$updateData['employee'], $startTimeUpdate,
+							$endTimeUpdate, $updateData['update']);
+
 						return true;
 					}
 					else
 					{
-						$this->error['ERROR_DATA'] = 'Access denied!';
+						$this->error['ERROR_DATA'] = ERROR_ACCESS;
 					}
 				}
 				else
 				{
-					$this->error['ERROR_DATA'] = 'Wrong date!';
+					$this->error['ERROR_DATA'] = ERROR_WRONG_DATA;
 				}
 			}
 		}
 		else
 		{
-			$allEvent = $myPdo->select('*')->table('appointments')->where(array('recursion' => $this->recurent), array('='))->query()->commit();
-
-			$new_employee = $updateData['employee'];
+			$allEvent = $this->queryToDbObj->getAllEvents($this->recurent);
+			//$new_employee = $updateData['employee'];
 			$newStartTime = explode(':', $updateData['starttime']);
 			$newEndTime = explode(':', $updateData['endtime']);
-			$id_employee = $allEvent[0]['id_employee'];
+			//$id_employee = $allEvent[0]['id_employee'];
 
 			foreach ($allEvent as $value)
 			{
@@ -508,33 +454,29 @@ class Event
 				$mon = date('m', $currentDay);
 				$year = date('Y', $currentDay);
 
-				$startDay = mktime(0, 0, 0, $mon, $day, $year);
-				$endDay = mktime(23, 59, 59, $mon, $day, $year);
+				$startDay = $this->startDay($mon, $day, $year);
+				$endDay = $this->endDay($mon, $day, $year);
 
-				$startTimeUpdate = mktime($newStartTime[0], $newStartTime[1], 0, $mon, $day, $year);
-				$endTimeUpdate = mktime($newEndTime[0], $newEndTime[1], 0, $mon, $day, $year);
+				$startTimeUpdate = $this->time($newStartTime[0],
+					$newStartTime[1], $mon, $day, $year);
+				$endTimeUpdate = $this->time($newEndTime[0],
+					$newEndTime[1], $mon, $day, $year);
 
-				$check = $myPdo->select('*')->table('appointments')
-					->where(array('start' => $startDay, 'end' => $endDay,
-												'id_appointment' => $id_appointment,
-												'id_room' => $room),
-						array('>=', '<=', '!=', '='))
-					->query()
-					->commit();
-
+				$check = $this->queryToDbObj->getEventFromDay($startDay,
+					$endDay, $id_appointment, $this->room);
 
 				if (isset($check))
 				{
 					$cnt = 0;
 					foreach ($check as $key => $val)
 					{
-						if ($val['end'] <= $startTimeUpdate || $val['start'] >= $endTimeUpdate)
+						if ($val['end'] <= $startTimeUpdate
+							|| $val['start'] >= $endTimeUpdate)
 						{
 							$cnt ++;
 						}
 					}
 				}
-
 
 				if (count($check) != $cnt)
 				{
@@ -548,22 +490,17 @@ class Event
 						&& $startTimeUpdate < $endTimeUpdate)
 					{
 						if(true === $this->userRole
-							|| $updateData['employee'] == $session->getSession('id_employee'))
+							|| $updateData['employee'] ==
+							$this->sessionObj->getSession('id_employee'))
 						{
-							$myPdo->update()
-								->table("appointments")
-								->set(array('description' => $updateData['description'],
-														'id_employee' => $updateData['employee'],
-														'start' => $startTimeUpdate,
-														'end' => $endTimeUpdate))
-								->where(array('id_appointment' => $id_appointment),
-									array('='))
-								->query()
-								->commit();
+							$this->queryToDbObj->setNewDataInEvent
+							($updateData['description'],
+								$updateData['employee'], $startTimeUpdate,
+								$endTimeUpdate, $id_appointment);
 						}
 						else
 						{
-							$this->error['ERROR_DATA'] = 'Access denied!';
+							$this->error['ERROR_DATA'] = ERROR_ACCESS;
 						}
 					}
 					else
@@ -580,11 +517,9 @@ class Event
 		}
 		else
 		{
-		return $this->error;
+			return $this->error;
 		}
 	}
-
-
 
 	public function setRecurent($var)
 	{
@@ -598,7 +533,7 @@ class Event
 
 	public function setData($var)
 	{
-		$this->data = $var;
+		$this->dataArray = $var;
 	}
 
 	public function setRoom($var)

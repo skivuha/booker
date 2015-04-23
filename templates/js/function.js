@@ -186,7 +186,7 @@ function setNewWindow()
         var target = event.target || event.srcElement;
         var id = $(this).attr('name');
         window.open('/Event/edit/id/'+id, '_blank', 'location, width = 350px,' +
-        'height = 415px, top = '+height+'px, left = '+widht+'px ').focus();
+        'height = 450px, top = '+height+'px, left = '+widht+'px ').focus();
     });
 }
 

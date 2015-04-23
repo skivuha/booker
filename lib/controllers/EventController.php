@@ -12,8 +12,9 @@ class EventController extends Controller
 		$this->event = new Event();
 		$this->view = new View();
 		$this->accessToCalendar();
-
+		$this->arrayLang();
 	}
+
 	public function addAction()
 	{
 		$action = $this->valid->clearDataArr($_POST);
@@ -22,31 +23,15 @@ class EventController extends Controller
 		if('false' == $action['recuringon'])
 		{
 			$status = $this->event->checkDateNoRecursion();
-			if(true === $status)
-			{
-				$array[0]=true;
-				$this->view->ajax($array);
-			}
-			else
-			{
-				$this->view->ajax($status);
-			}
+			$this->statusToAjax($status);
 		}
 		else
 		{
 			$status = $this->event->checkDateRecursion();
-			if(true === $status)
-			{
-				$array[0]=true;
-				$this->view->ajax($array);
-			}
-			else
-			{
-
-				$this->view->ajax($status);
-			}
+			$this->statusToAjax($status);
 		}
 	}
+
 	public function editAction()
 	{
 		$param = $this->data->getParams();
@@ -55,13 +40,13 @@ class EventController extends Controller
 		$this->event->userRole($this->userRole);
 		$arrayToDetails = $this->event->detailsEvent();
 		$this->view->addToReplace($arrayToDetails);
+		$this->view->addToReplace($this->langArr);
 		$this->view->setTemplateFile('details')->templateRender();
 	}
 
 	public function updateAction()
 	{
 		$this->event->setRoom($this->room);
-
 		$this->event->userRole($this->userRole);
 		$param = $this->data->getParams();
 		$name = $this->valid->clearData($param['do']);
@@ -75,15 +60,7 @@ class EventController extends Controller
 				}
 				$this->event->setData($id);
 				$status = $this->event->deleteEvent();
-				if(true === $status)
-				{
-					$array[0]=true;
-					$this->view->ajax($array);
-				}
-				else
-				{
-					$this->view->ajax($status);
-				}
+				$this->statusToAjax($status);
 			}
 		if('update' == $name)
 		{
@@ -97,15 +74,20 @@ class EventController extends Controller
 
 			$this->event->setData($param);
 			$status = $this->event->updateEvent();
-			if(true === $status)
-			{
-				$array[0]=true;
-				$this->view->ajax($array);
-			}
-			else
-			{
-				$this->view->ajax($status);
-			}
+			$this->statusToAjax($status);
+		}
+	}
+
+	private function statusToAjax($status)
+	{
+		if(true === $status)
+		{
+			$array[0]=true;
+			$this->view->ajax($array);
+		}
+		else
+		{
+			$this->view->ajax($status);
 		}
 	}
 

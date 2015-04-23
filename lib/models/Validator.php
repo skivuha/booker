@@ -22,9 +22,12 @@ class Validator
  	 */
   public function clearData($data)
   {
-    if (is_array($data)) {
+    if (is_array($data))
+	{
       return $this->clearDataArr($data);
-    } else {
+    }
+	else
+	{
       $data = trim(strip_tags($data));
       return $data;
     }
@@ -38,12 +41,16 @@ class Validator
  */
   public function clearDataArr(array $arr)
   {
-    if (!empty($arr) && is_array($arr)) {
-      foreach ($arr as $key => $value) {
+    if (!empty($arr) && is_array($arr))
+	{
+      foreach ($arr as $key => $value)
+	  {
         $data[$key] = $this->clearData($value);
       }
       return $data;
-    } else {
+    }
+	else
+	{
       return false;
     }
   }
@@ -58,9 +65,12 @@ class Validator
   {
     $this->value = '';
     $val = $this->clearData($val);
-    if (!preg_match("/^[a-zA-Z0-9]*$/", $val)) {
+    if (!preg_match("/^[a-zA-Z0-9]*$/", $val))
+	{
       return false;
-    } else {
+    }
+	else
+	{
       return true;
     }
   }
@@ -75,9 +85,12 @@ class Validator
   {
     $this->value = '';
     $val = $this->clearData($val);
-    if (!preg_match("/^[a-zA-Z0-9_-]{6,18}$/", $val)) {
+    if (!preg_match("/^[a-zA-Z0-9_-]{6,18}$/", $val))
+	{
       return false;
-    } else {
+    }
+	else
+	{
       return true;
     }
   }

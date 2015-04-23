@@ -1,7 +1,7 @@
 <div class="row well">
 <div class="col-xs-4">
-    <span>Welcome, {{NAME_EMPL}}.</span>
-    BOARDROOM #{{ROOM}} selected.
+    <span>%LANG_WELCOME%, {{NAME_EMPL}}.</span>
+    %LANG_BOARDROOM% #{{ROOM}} %LANG_SELECTEED%.
     <form action="/Calendar/logout/" method="post">
         <input type="submit" class="btn btn-default btn-xs" value="Exit" name="exit"></form>
 </div>
@@ -10,10 +10,10 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-10">
+    <div class="col-xs-9">
         {{CONTENT}}
           </div>
-           <div class="col-xs-2">
+           <div class="col-xs-3">
                <div class="row">
                    <!-- Button trigger modal -->
 
@@ -23,16 +23,17 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Boar
-                                droom Booker</h4>
+                            <h4 class="modal-title" id="myModalLabel">
+                                %LANG_BOOKERBOARDROOM%
+                            </h4>
                         </div>
                         <form method="post" id="modal">
                         <div class="modal-body">
-                            <p>1. Booked for:</p>
+                            <p>1. %LANG_BOOKEDFOR%:</p>
                             <p><select
                                     name="employeename">
                                 {{USER}}</select></p>
-                            <p>2. I would like to book this meeting</p>
+                            <p>2. %LANG_MEETENGDAY%</p>
                             <p>
                                 <select id="dropdownmonth"
                                         name="selectedmonth"></select>
@@ -41,11 +42,7 @@
                                 <select name="selectedyear"
                                         id="dropdownyear"></select>
                             </p>
-                            <p id="wrongdata">3. Specify what the time and en
-                                d of
-                                the
-                                meeting (This will be what people see on
-                                the calendar.)
+                            <p id="wrongdata">3. %LANG_PATH3%
                                 <span id="wrongdataerror"> &nbsp;</span>
                             </p>
                                 <p>
@@ -69,20 +66,17 @@
                                     <option>AM</option>
                                     <option>PM</option></select>
                             </p>
-                            <p>4. Enter the specifics for the meeting.
-                                (This will be what people see when they
-                                click on an event link.)
+                            <p>4. %LANG_PATH4%
                             </p>
                             <textarea name="desc" cols="78"></textarea>
-                            <p>5. Is this going to be a recurring event?</p>
+                            <p>5. %LANG_PATH5%</p>
                             <input type="radio" value="false" name="recuringon"
                                    id="recuringoff" checked/>no<br>
                             <input type="radio" name="recuringon"
                                     value="true" id="recuringon"/>yes
                                 <div id="recurring">
                             <p>
-                                6. If it is recurring, specify weekly,
-                                bi-weekly or monthly.
+                                6. %LANG_PATH6%
                             </p>
                             <input id="weekly" type="radio" name="recuring"
                                       value="weekly"/>weekly<br>
@@ -90,25 +84,21 @@
                                       value="bi-weekly"/>bi-weekly<br>
                             <input id="monthly" type="radio" name="recuring"
                                       value="monthly"/>monthly
-                            <p><br>
-                                If weekly or bi-weekly, specify the number
-                                of weeks for it to keep recurring. If
-                                monthly, specify the number of months. (If
-                                you choose "bi-weekly" and put in an odd
-                                number of weeks, the computer will round
-                                down.)
+                            <p><br> %LANG_INFO%
+
                             </p>
                             <p><input name="duration" id="duration" type="number" min="1"
-                                      max="4" value="1">duration(max 4
-                                weeks)</p>
+                                      max="4"
+                                      value="1">%LANG_DURATION%</p>
                                     </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">%LANG_CLOSEWIN%
+                            </button>
                             <button type="button"
                                     class="btn btn-default" id="savemodal"
-                                    form="modal">Save
-                                changes</button>
+                                    form="modal">%LANG_SAVECHENG%</button>
                         </div>
                         </form>
                     </div>
@@ -119,7 +109,7 @@
         {{ADMIN}}
                    <button type="button" class="btn btn-default"
                            data-toggle="modal" data-target="#myModal">
-                       Book It!
+                       %LANG_BOOKIT%
                    </button>
     </div></div>
 </div>

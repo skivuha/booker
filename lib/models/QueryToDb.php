@@ -47,7 +47,7 @@ class QueryToDb
 			->update()
 			->table('employee')
 			->set(array('code_employee' => $code_employee))
-			->where(array('name_employee' => $name), array('='))
+			->where(array('mail_employee' => $name), array('='))
 			->query()
 			->commit();
 
@@ -100,6 +100,26 @@ class QueryToDb
 			->delete()
 			->table('employee')
 			->where(array('id_employee' => $id_employee), array('='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+ /*
+ * Delete event selected user
+ *
+ * @param id_employee: id_employee deleted employee
+ * @param time: begin time for event deleted employee
+ * @return: array
+ */
+	public function deleteAppointmentsCurrentEmployee($id_employee, $time)
+	{
+		$result = $this->myPdoObj
+			->delete()
+			->table('appointments')
+			->where(array('id_employee' => $id_employee, 'start' => $time),
+				array('=', '>='))
 			->query()
 			->commit();
 
@@ -175,7 +195,7 @@ class QueryToDb
 	public function getEmployeeById($id_employee)
 	{
 		$result = $this->myPdoObj
-			->select('mail_employee, name_employee')
+			->select('mail_employee, name_employee, id_employee')
 			->table('employee')
 			->where(array('id_employee' => $id_employee), array('='))
 			->query()
@@ -201,5 +221,177 @@ class QueryToDb
 		return $result;
 	}
 
+	public function getCalendarAppointmentsSelectedMonth($first, $last, $room)
+	{
+		$result = $this->myPdoObj->select('id_appointment, description,
+		id_employee, start, end, id_room, recursion, submitted')
+			->table('appointments')
+			->where(array('start' => $first,
+						  'end'=> $last,
+						  'id_room'=> $room),
+				array('>=','<=','='))
+			->order('start ASC')
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getCalendarListEmployee()
+	{
+		$result = $this->myPdoObj->select('name_employee, id_employee')
+			->table('employee')
+			->where(array('name_employee' => 'root'), array('!='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getEventSelectedDayAndRoom($startDay, $endDay, $room)
+	{
+		$result = $this->myPdoObj->select('id_appointment, description,
+		id_employee, start, end, id_room, recursion, submitted')
+			->table('appointments')
+			->where(array('start' => $startDay,
+						  'end'=> $endDay, 'id_room'=> $room),
+				array('>=','<=','='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function setEvent($description, $employee, $start, $end, $room)
+	{
+		$result = $this->myPdoObj->insert()
+			->table("appointments")
+			->set(array('description'=>$description, 'id_employee'=> $employee,
+						'start'=>$start, 'end'=>$end,
+						'id_room'=>$room,	'recursion'=>'0'))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function setEventWithRecur($description, $employee,
+									  $start, $end, $room, $id)
+	{
+		$result = $this->myPdoObj->insert()
+			->table("appointments")
+			->set(array('description'=>$description, 'id_employee'=> $employee,
+						'start'=>$start, 'end'=>$end,
+						'id_room'=>$room,	'recursion'=>$id))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getLastId()
+	{
+		return $this->myPdoObj->lastId;
+	}
+
+	public function setParentRecur($id)
+	{
+		$result = $this->myPdoObj->update()
+			->table("appointments")
+			->set(array('recursion'=> $id))
+			->where(array('id_appointment'=>$id), array('='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getEventById($id)
+	{
+		$result = $this->myPdoObj->select('id_appointment, description,
+		id_employee, start, end, id_room, recursion, submitted')
+			->table('appointments')
+			->where(array('id_appointment' => $id), array('='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getEmployeeListExeptRoot()
+	{
+		$result = $this->myPdoObj->select('name_employee, id_employee')
+			->table('employee')
+			->where(array('name_employee' => 'root'), array('!='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function deleteEventNoRecur($id,$currentTime)
+	{
+		$result = $this->myPdoObj->delete()
+			->table('appointments')
+			->where(array('id_appointment' => $id,
+						  'start' => $currentTime), array('=', '>='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function deleteEventWithRecur($recur,$currentTime)
+	{
+		$result = $this->myPdoObj->delete()
+			->table('appointments')
+			->where(array('recursion'=>$recur,
+						  'start'=>$currentTime),array('=','>='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function getEventFromDay($startDay, $endDay, $id, $room)
+	{
+		$result = $this->myPdoObj->select('id_appointment, description,
+		id_employee, start, end, id_room, recursion, submitted')
+			->table('appointments')
+			->where(array('start' => $startDay,
+						  'end' => $endDay,
+						  'id_appointment' => $id,
+						  'id_room' => $room),
+				array('>=', '<=', '!=', '='))
+			->query()
+			->commit();
+
+		return $result;
+	}
+
+	public function setNewDataInEvent($desc, $id_e, $start, $end, $id_a)
+	{
+		$this->myPdoObj->update()->table("appointments")
+			->set(array('description' => $desc,
+						'id_employee' => $id_e,
+						'start' => $start,
+						'end' => $end))
+			->where(array('id_appointment' => $id_a),
+				array('='))
+			->query()
+			->commit();
+	}
+
+	public function getAllEvents($recur)
+	{
+		$result = $this->myPdoObj->select('id_appointment, description,
+		id_employee, start, end, id_room, recursion, submitted')
+			->table('appointments')
+			->where(array('recursion' => $recur), array('='))
+			->query()
+			->commit();
+
+		return $result;
+	}
 }
 ?>

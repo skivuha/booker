@@ -1,66 +1,63 @@
 <?php
+
+ /*
+ * Class: CalendarController
+ *
+ * Calendar. Default page after authorisation.
+ */
+
 class CalendarController extends Controller
 {
 
 	private $arrRender;
+	private $calendarObj;
+	private $viewObj;
+	private $mArray;
+	private $dataObj;
 
 	public function __construct()
 	{
 		$this->accessToCalendar();
 		$this->arrayLang();
+		$this->calendarObj = new Calendar();
+		$this->viewObj = new View;
+		$this->dataObj = Router::getInstance();
 	}
 
+ /*
+ * Default action. Check employee role and build calendar
+ */
 	public function indexAction()
 	{
-		$cal = new Calendar();
-		$cal->setUserRole($this->userRole);
-		$cal->setFirstDay($this->getFirstDay());
-		$cal->setTimeFormat($this->getTimeFormat());
-		$b = $cal->printCalendar();
-		$view = new View;
-		if(true === $this->userRole)
-		{
-			$b['ADMIN'] = $view->setTemplateFile('employee')->renderFile();
-		}
+		$this->calendarObj->setUserRole($this->userRole);
+		$this->calendarObj->setFirstDay($this->getFirstDay());
+		$this->calendarObj->setTimeFormat($this->getTimeFormat());
 
-		$view->addToReplace($b);
-		$view->addToReplace($this->langArr);
-
-		$view->setTemplateFile('calendar')->templateRenderContent();
-		$this->listRoom();
-		$view->addToReplace($this->arrRender);
-		$view->setTemplateFile('workpage')->templateRenderContent();
-		$view->setTemplateFile('index')->templateRender();
+		$this->arrayToPrint();
 	}
 
+ /*
+ * Get params next or previous month from GET array.
+ */
 	public function anotherAction()
 	{
-		$cal = new Calendar();
-		$cal->setFirstDay($this->getFirstDay());
-		$cal->setTimeFormat($this->getTimeFormat());
-		$cal->setUserRole($this->userRole);
+		$this->calendarObj->setFirstDay($this->getFirstDay());
+		$this->calendarObj->setTimeFormat($this->getTimeFormat());
+		$this->calendarObj->setUserRole($this->userRole);
 		$getParam = false;
-		$data = Router::getInstance();
-		$params = $data->getParams();
+		$params = $this->dataObj->getParams();
 		if(isset($params))
 		{
 			$getParam = true;
 		}
-		$cal->setFlagParams($getParam);
-		$data = $cal->printCalendar();
-		$view = new View;
-		if(true === $this->userRole)
-		{
-			$data['ADMIN'] = $view->setTemplateFile('employee')->renderFile();
-		}
-		$view->addToReplace($data);
-		$view->addToReplace($this->langArr);
-		$view->setTemplateFile('calendar')->templateRenderContent();
-		$this->listRoom();
-		$view->addToReplace($this->arrRender);
-		$view->setTemplateFile('workpage')->templateRenderContent();
-		$view->setTemplateFile('index')->templateRender();
+		$this->calendarObj->setFlagParams($getParam);
+
+		$this->arrayToPrint();
 	}
+
+ /*
+ * Exit from calendar.
+ */
 	public function logoutAction()
 	{
 		session_destroy();
@@ -68,19 +65,46 @@ class CalendarController extends Controller
 		header('Location: '.PATH.'');
 	}
 
+ /*
+ * Create list of room
+ */
 	private function listRoom()
 	{
-		$cal = new Calendar();
-		$view = new View;
-		$room = $cal->getListRoom();
+		$room = $this->calendarObj->getListRoom();
 		foreach($room as $key => $val)
 		{
 			$arr = array('ROOM_ID' => $val['id_room'],
 						 'ROOM_NAME' => $val['name_room']);
-			$view->addToReplace($arr);
-			$this->arrRender['ROOMLIST'] .= $view->
+			$this->viewObj->addToReplace($arr);
+			$this->arrRender['ROOMLIST'] .= $this->viewObj->
 			setTemplateFile('room')->renderFile();
 		}
+	}
+
+ /*
+ * Send view array to replace placeholder and print page
+ */
+	private function arrayToPrint()
+	{
+		$this->mArray = $this->calendarObj->printCalendar();
+		if(true === $this->userRole)
+		{
+			$this->mArray['ADMIN'] = $this->viewObj
+				->setTemplateFile('employee')->renderFile();
+		}
+		$this->viewObj->addToReplace($this->langArr);
+		$this->viewObj->addToReplace($this->mArray);
+		$this->viewObj->addToReplace($this->arrRender);
+		$this->arrRender['CONTENT'] = $this->viewObj
+			->setTemplateFile('calendar')->renderFile();
+		$this->listRoom();
+		$this->viewObj->addToReplace($this->arrRender);
+
+		$this->arrRender['CONTENT'] = $this->viewObj
+			->setTemplateFile('workpage')->renderFile();
+		$this->viewObj->addToReplace($this->arrRender);
+
+		$this->viewObj->setTemplateFile('index')->templateRender();
 	}
 }
 ?>

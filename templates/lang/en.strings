@@ -112,5 +112,151 @@
 	    <KEY>24H</KEY>
 	    <VALUE>24 hour</VALUE>
     </ISTRING>
+    <ISTRING>
+        <KEY>DETAILS</KEY>
+        <VALUE>Details</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>WHEN</KEY>
+        <VALUE>When</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>NOT</KEY>
+        <VALUE>Notes</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>WHOIS</KEY>
+        <VALUE>Who</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SUBMIT</KEY>
+        <VALUE>Submitted</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>APPLY</KEY>
+	    <VALUE>Apply to all occurrences?</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>UPDATE</KEY>
+	    <VALUE>Update</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>DELETE</KEY>
+	    <VALUE>Delete</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EMPLOYEELISTT</KEY>
+        <VALUE>Employee list</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>BOOKIT</KEY>
+        <VALUE>Book It</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>WELCOME</KEY>
+        <VALUE>Welcome</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>BOARDROOM</KEY>
+        <VALUE>Boardroom</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SELECTEED</KEY>
+        <VALUE>selected</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>BOOKERBOARDROOM</KEY>
+	    <VALUE>Boardroom Booker</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>BOOKEDFOR</KEY>
+	    <VALUE>Booked for</VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>MEETENGDAY</KEY>
+	    <VALUE>I would like to book this meeting</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>PATH3</KEY>
+        <VALUE>Specify what the time and end of the
+        meeting (This will be what people see on the calendar.)</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>PATH4</KEY>
+        <VALUE>Enter the specifics for the meeting.
+        (This will be what people see when they
+         click on an event link.)</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>PATH5</KEY>
+        <VALUE>Is this going to be a recurring event?</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>PATH6</KEY>
+        <VALUE>If it is recurring, specify weekly,
+         bi-weekly or monthly.</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>INFO</KEY>
+        <VALUE>
+        If weekly or bi-weekly, specify the number
+        of weeks for it to keep recurring. If
+        monthly, specify the number of months.
+        (If you choose "bi-weekly" and put in an odd
+        number of weeks, the computer will round down.)
+        </VALUE>
+    </ISTRING>
+    <ISTRING>
+	    <KEY>DURATION</KEY>
+	    <VALUE>duration(max 4 weeks)</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>CLOSEWIN</KEY>
+        <VALUE>Close</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SAVECHENG</KEY>
+        <VALUE>Save changes</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EDITEMPL</KEY>
+        <VALUE>Edit</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EMPLTITLE</KEY>
+        <VALUE>Employees</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>BACKTOCAL</KEY>
+        <VALUE>Back</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>NAMEEMPLO</KEY>
+        <VALUE>Name</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EMAILEMPLO</KEY>
+        <VALUE>E-mail</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>PASSEMPLO</KEY>
+        <VALUE>Password</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>SAVEEMPLO</KEY>
+        <VALUE>Save</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>NAMEEMPLOY</KEY>
+        <VALUE>Name</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>DELEMPLOY</KEY>
+        <VALUE>Delete</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EDITEMPLOY</KEY>
+        <VALUE>Edit</VALUE>
+    </ISTRING>
 </ISTRINGTABLE>
 

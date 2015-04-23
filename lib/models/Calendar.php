@@ -1,4 +1,10 @@
 <?php
+
+ /*
+ * Class: Calendar
+ *
+ */
+
 class Calendar extends Model
 {
 	private $currentMonth;
@@ -25,33 +31,19 @@ class Calendar extends Model
 	private $room;
 	private $userRole;
 
-	public function setFirstDay($var)
-	{
-		$this->startDay = $var;
-		return true;
-	}
-
-	private function getCurrentData()
-	{
-		$this->currentDay = date('d');
-		$this->currentMonth = date('n');
-		$this->currentYear = date('Y');
-	}
-
-	public function setUserRole($var)
-	{
-		$this->userRole = $var;
-	}
-
+ /*
+ * Get data from GET array and build new link next and previous month
+ */
 	private function getNewData()
 	{
 		$this->getCurrentData();
 		if(true === $this->flagParams)
 		{
-			$data = Router::getInstance();
-			$getParam = $data->getParams();
-			$this->newMonth = abs((int)$getParam['month']);
-			$this->newYear = abs((int)$getParam['year']);
+			$getParam = $this->data->getParams();
+			$this->newMonth = $this->validatorObj
+				->numCheck($getParam['month']);
+			$this->newYear = $this->validatorObj
+				->numCheck($getParam['year']);
 		}
 		else
 		{
@@ -74,17 +66,25 @@ class Calendar extends Model
 		}
 	}
 
-	private function getTimeStamp()
+ /*
+ * Get main timestamp
+ */
+ 	private function getTimeStamp()
 	{
 		$this->countDayOfCurrentMonth = date('t',
 			strtotime($this->newYear.'-'.$this->newMonth));
-		$this->firstDayTimeStampChoiseMonth = mktime(0, 0, 0, $this->newMonth, 1,
-			$this->newYear);
-		$this->lastDayTimeStampChoiseMonth = mktime(23, 59, 59, $this->newMonth,
-			$this->countDayOfCurrentMonth, $this->newYear);
+		$this->firstDayTimeStampChoiseMonth = mktime(0, 0, 0,
+			$this->newMonth, 1, $this->newYear);
+		$this->lastDayTimeStampChoiseMonth = mktime(23, 59, 59,
+			$this->newMonth, $this->countDayOfCurrentMonth, $this->newYear);
 		$this->currentDayTimeStamp = time();
 	}
 
+ /*
+ * Get main array witch content day of week and number of day
+ *
+ * @return: array;
+ */
 	private function getCalendar()
 	{
 		$this->getNewData();
@@ -93,8 +93,8 @@ class Calendar extends Model
 		for($j=1; $j<=6; $j++)
 		{
 			for ($i = 0; $i < 7; $i++) {
-				$dayOfWeek = date('w', mktime(0, 0, 0, $this->newMonth, $day_count,
-					$this->newYear));
+				$dayOfWeek = date('w', mktime(0, 0, 0, $this->newMonth,
+					$day_count,	$this->newYear));
 				$this->saturday = 6;
 				$this->sunday = 0;
 				$this->disable = false;
@@ -111,7 +111,8 @@ class Calendar extends Model
 						$dayOfWeek = 6;
 					}
 				}
-				if ($i == $dayOfWeek && $day_count <= $this->countDayOfCurrentMonth)
+				if ($i == $dayOfWeek
+					&& $day_count <= $this->countDayOfCurrentMonth)
 				{
 					$week[$j][$i] = $day_count;
 					if($day_count <= $this->countDayOfCurrentMonth)
@@ -128,6 +129,11 @@ class Calendar extends Model
 	return $week;
 	}
 
+ /*
+ * Get main data calendar
+ *
+ * @return: array
+ */
 	public function printCalendar()
 	{
 		$var = $this->getCalendar();
@@ -146,11 +152,13 @@ class Calendar extends Model
 				{
 						if ($this->saturday == $key2 || $this->sunday == $key2)
 						{
-							$data .= '<td style="color: red">' . $value . '<br>&nbsp;</td>';
+							$data .= '<td style="color: red">'.$value.'
+							<br>&nbsp;</td>';
 						}
 					else
 					{
-						$data .= '<td>' . $value . '<div>&nbsp;{{EVENT'.$value.'}}</div></td>';
+						$data .= '<td>' . $value . '<div>&nbsp;
+						{{EVENT'.$value.'}}</div></td>';
 					}
 				}
 				else
@@ -161,7 +169,6 @@ class Calendar extends Model
 			$data.= '</tr>';
 		}
 		$this->getCurrentData();
-
 
 		if(true === $this->disable)
 		{
@@ -186,14 +193,7 @@ class Calendar extends Model
 			$this->calendar['TIMEFORMAT'] = '24h';
 			$this->calendar['TIMEFORMATB'] = '%LANG_24H%';
 		}
-		$session = Session::getInstance();
-		$this->room = $session->getSession('room');
-
-		//if(false === $this->userRole)
-		//{
-		//	$this->calendar['ADMIN'] = 'disabled';
-		//}
-
+		$this->room = $this->sessionObj->getSession('room');
 		$this->calendar['HEADCALENDAR'] = $head;
 		$this->calendar['LOWER'] = 'year/'.$this->subYear.'/month/'
 			.$this->subMonth;
@@ -202,46 +202,33 @@ class Calendar extends Model
 		$this->calendar['CURRENT'] = '%LANG_'.$this->newMonth.'% - '
 			.$this->newYear;
 		$this->calendar['CONTENT'] = $data;
-		$this->calendar['NAME_EMPL']= $session->getSession('name_employee');
+		$this->calendar['NAME_EMPL']= $this->sessionObj
+			->getSession('name_employee');
 		$this->calendar['ROOM'] = $this->room;
-
 		$this->getAppointments();
 		$this->getDataToBookIt();
 
 	return $this->calendar;
 	}
 
-	public function setFlagParams($var)
-	{
-		$this->flagParams = $var;
-	}
-
-	public function setTimeFormat($var)
-	{
-		$this->timeFormat = $var;
-	}
-
+ /*
+ * Get main array witch content day of week and number of day
+ *
+ * @return boolean
+ */
 	private function getAppointments()
 	{
-		$session = Session::getInstance();
-		$myPdo = MyPdo::getInstance();
-    $arr = $myPdo->select('*')
-      ->table('appointments')
-      ->where(array('start' => $this->firstDayTimeStampChoiseMonth,
-										'end'=> $this->lastDayTimeStampChoiseMonth,
-										'id_room'=> $this->room),
-				array('>=','<=','='))
-			->order('start ASC')
-      ->query()
-      ->commit();
-
-
-
+    $arr = $this->queryToDbObj
+		->getCalendarAppointmentsSelectedMonth(
+			$this->firstDayTimeStampChoiseMonth,
+			$this->lastDayTimeStampChoiseMonth,
+			$this->room);
 
       foreach($arr as $key=>$val)
       {
 				if(true === $this->userRole
-					|| $val['id_employee'] == $session->getSession('id_employee'))
+					|| $val['id_employee'] == $this->sessionObj->getSession
+					('id_employee'))
 				{
 					$role = '';
 				}
@@ -255,7 +242,8 @@ class Calendar extends Model
 				$startTimeFormat = 	date('h', $val['start']).':'.date('i',
 						$val['start']);
 		$endTime = date('H', $val['end']).':'.date('i', $val['end']);
-				$endTimeFormat = date('h', $val['end']).':'.date('i', $val['end']);
+				$endTimeFormat = date('h', $val['end']).':'.date('i',
+						$val['end']);
 				if(true === $this->timeFormat)
 				{
 					if($timeForm > $startTime)
@@ -275,41 +263,73 @@ class Calendar extends Model
 						$endTime = $endTimeFormat.'PM';
 					}
 				}
-
 	 $this->calendar['EVENT'.$day].= '<br><a href="" name="'
 		 .$val['id_appointment'].'"
 	  class="event" '.$role.'>'.$startTime.' - '.$endTime.'</a>';
 		}
+		return true;
 	}
 
+ /*
+ * Get list of employee
+ *
+ * @return: boolean
+ */
 	private function getDataToBookIt()
 	{
-		$myPdo = MyPdo::getInstance();
-		$employee = $myPdo->select('name_employee, id_employee')
-			->table('employee')
-			->where(array('name_employee' => 'root'), array('!='))
-			->query()
-			->commit();
 
-		$session = Session::getInstance();
+		$employee = $this->queryToDbObj->getCalendarListEmployee();
 		if(false === $this->userRole)
 		{
-			$this->calendar['USER'] = '<option value="'.$session->getSession
-			('id_employee').'">'.$session->getSession('name_employee').'</option>';
+			$this->calendar['USER'] = '<option value="'
+				.$this->sessionObj->getSession
+			('id_employee').'">'.$this->sessionObj->getSession('name_employee')
+				.'</option>';
 		}
 		else
 		{
 			foreach($employee as $key => $value)
 			{
-				$this->calendar['USER'].= '<option value="'.$value['id_employee'].'">'
-			.$value['name_employee'].'</option>';
+				$this->calendar['USER'].= '<option value="'.
+					$value['id_employee'].'">'.
+					$value['name_employee'].'</option>';
 			}
 		}
+		return true;
+	}
+
+	private function getCurrentData()
+	{
+		$this->currentDay = date('d');
+		$this->currentMonth = date('n');
+		$this->currentYear = date('Y');
 	}
 
 	public function getListRoom()
 	{
 		return $this->queryToDbObj->getCalendarRoomList();
+	}
+
+	public function setUserRole($var)
+	{
+		$this->userRole = $var;
+		return true;
+	}
+
+	public function setFirstDay($var)
+	{
+		$this->startDay = $var;
+		return true;
+	}
+
+	public function setFlagParams($var)
+	{
+		$this->flagParams = $var;
+	}
+
+	public function setTimeFormat($var)
+	{
+		$this->timeFormat = $var;
 	}
 }
 ?>

@@ -4,6 +4,7 @@
  * Class: Base model
  *
  */
+
 abstract class Model
 {
 	protected $validatorObj;
@@ -21,10 +22,6 @@ abstract class Model
 		$this->encodeObj = new Encode();
 		$this->cookieObj = new Cookie();
 		$this->data = Router::getInstance();
-	}
-
-	public function get_data()
-	{
 	}
 }
 ?>

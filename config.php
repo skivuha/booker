@@ -43,4 +43,7 @@ define('ERROR_EMPTY', 'Field is empty');
 define('ERROR_WRONG_DATA', 'Wrong data');
 define('ERROR_ACCESS', 'Wrong name or password');
 define('ERROR_EXISTS', 'E-mail or name already exists');
+define('ERROR_BUSY', 'Sorry, this time alredy busy!');
+define('ERROR_WEEKEND', 'Warrning, this day a weekend!');
+define('ERROR_ACCESS', 'Access denied!');
 ?>

@@ -39,7 +39,7 @@ class EmployeeController extends Controller
 			$this->view->addToReplace($employee);
 		}
 
-		$this->view->addToReplace($this->langArr);
+
 		$this->listEmployee();
 		$this->arrayToPrint();
 	}
@@ -110,8 +110,11 @@ class EmployeeController extends Controller
  */
 	private function arrayToPrint()
 	{
+		$this->view->addToReplace($this->langArr);
 		$this->view->addToReplace($this->arrRender);
-		$this->view->setTemplateFile('employeeedit')->templateRenderContent();
+		$this->arrRender['CONTENT'] = $this->view
+			->setTemplateFile('employeeedit')->renderFile();
+		$this->view->addToReplace($this->arrRender);
 		$this->view->setTemplateFile('index')->templateRender();
 	}
 }

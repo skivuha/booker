@@ -66,15 +66,6 @@ class View
 		return $this->file;
 	}
 
-	public function templateRenderContent()
-	{
-		$this->renderFile();
-		$default = '';
-		$this->file = preg_replace('/{{(.*)}}/Uis', $default, $this->file);
-		$this->forRender['CONTENT'] = $this->file;
-	}
-
-
 	public function templateRender()
 	{
 		$this->renderFile();
