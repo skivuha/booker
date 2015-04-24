@@ -1,6 +1,6 @@
 <?php
 
-/*
+ /*
  * Class: Base model
  *
  */

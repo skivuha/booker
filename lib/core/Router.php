@@ -2,7 +2,7 @@
 /**
  * Class: Router
  *
- *
+ * Parse url for controller, action, params
  */
 class Router
 {

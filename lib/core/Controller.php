@@ -1,9 +1,10 @@
 <?php
 
-/**
+ /*
  * Class: Base controller
  *
  */
+
 abstract class Controller
 {
 	protected $session;
@@ -16,7 +17,6 @@ abstract class Controller
 
 	public function __construct()
 	{
-
 		$this->userAuth = false;
 		$this->session = Session::getInstance();
 		$this->check = new Check();
@@ -24,29 +24,54 @@ abstract class Controller
 		$this->arrayLang();
 	}
 
+ /*
+ * Get number of room from session
+ *
+ * @return: number;
+ */
 	protected function getRoom()
 	{
 		$this->room = $this->session->getSession('room');
 		return $this->room;
 	}
 
+ /*
+ * Get format start week day from cookie. (monday or sunday)
+ *
+ * @return: string;
+ */
 	protected function getFirstDay()
 	{
 		$this->cookie = new Cookie();
 		return $this->cookie->read('user2_firstday');
 	}
 
+ /*
+ * Get time format from cookie. (12 hour or 24 hour)
+ *
+ * @return: string;
+ */
 	protected function getTimeFormat()
 	{
 		$this->cookie = new Cookie();
 		return $this->cookie->read('user2_timeFormat');
 	}
 
+ /*
+ * Set variable checkUser
+ *
+ * @return: boolean;
+ */
 	protected function checkUser()
 	{
 		return $this->userAuth = $this->check->getUserStatus();
 	}
 
+ /*
+ * Get lang from cookie. ('en' or 'ru')
+ *
+ * @return: array;
+ */
 	protected function arrayLang()
 	{
 		$this->cookie = new Cookie();
@@ -56,6 +81,9 @@ abstract class Controller
 		return $this->langArr;
 	}
 
+ /*
+ * Get user role from session and set to variable
+ */
 	protected function accessToCalendar()
 	{
 		$this->check = new Check();
@@ -75,6 +103,10 @@ abstract class Controller
 			header('Location: '.PATH.'Home/index', true, 303);
 		}
 	}
+
+ /*
+ * Get user role and redirect if not root
+ */
 	protected function accessToEmployee()
 	{
 		$this->accessToCalendar();

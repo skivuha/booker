@@ -1,7 +1,8 @@
 <?php
 
  /*
- * Class: Base model
+ * Class: Check
+ * All main check before choose controller
  *
  */
 
