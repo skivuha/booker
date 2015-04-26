@@ -1,5 +1,5 @@
 <?php
-/**
+ /*
  * Checks a file exists
  *
  * @param file: Name of file

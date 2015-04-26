@@ -258,5 +258,13 @@
         <KEY>EDITEMPLOY</KEY>
         <VALUE>Edit</VALUE>
     </ISTRING>
+    <ISTRING>
+        <KEY>EXITUS</KEY>
+        <VALUE>Exit</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>CLEAREMPLO</KEY>
+        <VALUE>Clear</VALUE>
+    </ISTRING>
 </ISTRINGTABLE>
 

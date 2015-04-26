@@ -1,4 +1,9 @@
 <?php
+
+ /*
+ * Class: Event
+ */
+
 class Event extends Model
 {
 	private $dataArray;
@@ -34,21 +39,48 @@ class Event extends Model
 		$this->room = $this->sessionObj->getSession('room');
 	}
 
+ /*
+ * Get timestamp by condition
+ * @param hour: hour
+ * @param minute: minutes
+ * @param month: month
+ * @param day: day
+ * @param year: year
+ * @return: integer
+ */
 	private function time($hour, $minute, $month, $day, $year)
 	{
 		return mktime($hour, $minute, 0, $month, $day, $year);
 	}
 
+ /*
+ * Get timestamp start day by condition
+ * @param month: month
+ * @param day: day
+ * @param year: year
+ * @return: integer
+ */
 	private function startDay($month, $day, $year)
 	{
 		return mktime(0, 0, 0, $month, $day, $year);
 	}
 
+ /*
+ * Get timestamp end day by condition
+ * @param month: month
+ * @param day: day
+ * @param year: year
+ * @return: integer
+ */
 	private function endDay($month, $day, $year)
 	{
 		return mktime(23, 59, 59, $month, $day, $year);
 	}
 
+ /*
+ * Add event by condition from post array
+ * @return: array or boolean
+ */
 	public function checkDateNoRecursion()
 	{
 		$this->dataFromPost();
@@ -125,6 +157,10 @@ class Event extends Model
 		}
 	}
 
+ /*
+ * Add event by condition from post array
+ * @return: array or boolean
+ */
 	public function checkDateRecursion()
 	{
 		$duration = (int)$this->dataArray['duration'];
@@ -163,10 +199,10 @@ class Event extends Model
 				$endTime[$i] = $this->time($this->selectedEndHour,
 					$this->selectedEndMinute,$this->selectedMonth + $period*$i,
 					$this->selectedDay + $interval*$i, $this->selectedYear);
-				$startDay = $this->startDay($this->selectedMonth,
-					$this->selectedDay,	$this->selectedYear);
-				$endDay = $this->endDay($this->selectedMonth,
-					$this->selectedDay,	$this->selectedYear);
+				$startDay = $this->startDay($this->selectedMonth + $period*$i,
+					$this->selectedDay + $interval*$i,	$this->selectedYear);
+				$endDay = $this->endDay($this->selectedMonth + $period*$i,
+					$this->selectedDay + $interval*$i,	$this->selectedYear);
 
 				if(6 == date('w', $startTime[$i]))
 				{
@@ -260,6 +296,10 @@ class Event extends Model
 		return $this->error;
 	}
 
+ /*
+ * Show data current day and current event in new window
+ * @return: array
+ */
 	public function detailsEvent()
 	{
 		$id_appointment = $this->dataArray;
@@ -294,8 +334,7 @@ class Event extends Model
 		if(false == $this->userRole)
 		{
 			$listUser = '<option value="'.$name_employee[0]['id_employee'].'">
-			'.$name_employee[0]['name_employee']
-				.'</option>';
+			'.$name_employee[0]['name_employee'].'</option>';
 		}
 		else
 		{
@@ -314,7 +353,6 @@ class Event extends Model
 					$value['name_employee'].'</option>';
 			}
 		}
-		$this->dArray['WHO'] = $listUser;
 		$this->dArray['NOTES'] = $currentEvent[0]['description'];
 		$this->dArray['SUBMITTED'] = $currentEvent[0]['submitted'];
 		$this->dArray['ID'] = $id_appointment;
@@ -323,27 +361,37 @@ class Event extends Model
 				&& $currentEvent[0]['id_employee'] != $id_employee))
 		{
 			$this->dArray['ACTIVE'] = 'disabled';
+			$this->dArray['HIDE'] = 'display: none;';
+			$this->dArray['WHO'] = '<option value="'
+				.$name_employee[0]['id_employee'].'">'.
+				$name_employee[0]['name_employee']
+				.'</option>';
 		}
 		else
 		{
 			$this->dArray['ACTIVE'] = '';
+			$this->dArray['WHO'] = $listUser;
 		}
 
 		return $this->dArray;
 	}
 
+ /*
+ * Delete event
+ * @return: array or boolean
+ */
 	public function deleteEvent()
 	{
-		$currentTime = time();
 		$id_appointment = $this->dataArray;
-		$updateData = $_POST['empl'];
+		$updateData = $this->validatorObj->numCheck($_POST['empl']);
+		$currentDay = $this->validatorObj->clearData($_POST['start']);
 		if(!isset($this->recurent))
 		{
 			if(true === $this->userRole
 				|| $updateData == $this->sessionObj->getSession('id_employee'))
 			{
 				$rez = $this->queryToDbObj
-					->deleteEventNoRecur($id_appointment, $currentTime);
+					->deleteEventNoRecur($id_appointment, $currentDay);
 				return $rez;
 			}
 			else
@@ -357,7 +405,7 @@ class Event extends Model
 				|| $updateData == $this->sessionObj->getSession('id_employee'))
 			{
 				$this->queryToDbObj
-					->deleteEventWithRecur($this->recurent, $currentTime);
+					->deleteEventWithRecur($this->recurent, $currentDay);
 
 				return true;
 			}
@@ -369,9 +417,14 @@ class Event extends Model
 		return $this->error;
 	}
 
+ /*
+ * Update data event
+ * @return: array or boolean
+ */
 	public function updateEvent()
 	{
 		$currentTime = time();
+		$this->room = $this->sessionObj->getSession('room');
 		$updateData = $this->dataArray;
 		if (!isset($this->recurent))
 		{
@@ -392,7 +445,6 @@ class Event extends Model
 
 			$check = $this->queryToDbObj->getEventFromDay($startDay,
 				$endDay, $updateData['update'], $this->room);
-
 			if (isset($check))
 			{
 				$cnt = 0;
@@ -441,10 +493,9 @@ class Event extends Model
 		else
 		{
 			$allEvent = $this->queryToDbObj->getAllEvents($this->recurent);
-			//$new_employee = $updateData['employee'];
 			$newStartTime = explode(':', $updateData['starttime']);
 			$newEndTime = explode(':', $updateData['endtime']);
-			//$id_employee = $allEvent[0]['id_employee'];
+			$startChangeRecur = $updateData['start'];
 
 			foreach ($allEvent as $value)
 			{
@@ -480,44 +531,40 @@ class Event extends Model
 
 				if (count($check) != $cnt)
 				{
-					$this->error['ERROR_DATA'] = 'Warning, '.$day.' '.
-						date('F', $currentDay).' alredy	busy!';
+					$this->error['ERROR_DATA'] .= 'Warning, '.$day.' '.
+						date('F', $currentDay).' alredy	busy!<br>';
 				}
 				else
 				{
-					if ($currentTime < $startTimeUpdate
-						&& $currentTime < $currentDay
-						&& $startTimeUpdate < $endTimeUpdate)
+				    if ($startChangeRecur <= $startTimeUpdate
+					    && $currentTime < $currentDay
+		        	    && $startTimeUpdate < $endTimeUpdate)
 					{
-						if(true === $this->userRole
-							|| $updateData['employee'] ==
-							$this->sessionObj->getSession('id_employee'))
+						if (true === $this->userRole
+							|| $updateData['employee'] == $this->sessionObj
+								->getSession('id_employee'))
 						{
-							$this->queryToDbObj->setNewDataInEvent
-							($updateData['description'],
-								$updateData['employee'], $startTimeUpdate,
-								$endTimeUpdate, $id_appointment);
+							$this->queryToDbObj
+								->setNewDataInEvent($updateData['description'],
+									$updateData['employee'], $startTimeUpdate,
+									$endTimeUpdate, $id_appointment);
 						}
 						else
 						{
 							$this->error['ERROR_DATA'] = ERROR_ACCESS;
 						}
 					}
-					else
-					{
-						$this->error['ERROR_DATA'] = 'Warning, '.$day.' '.
-							date('F', $currentDay).' alredy	busy!';
-					}
 				}
-			}
+		    }
 		}
-		if(empty($this->error))
-		{
-			return true;
+		    if(empty($this->error))
+		
+		{	
+		    return true;
 		}
 		else
 		{
-			return $this->error;
+		    return $this->error;
 		}
 	}
 

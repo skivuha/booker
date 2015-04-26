@@ -138,7 +138,7 @@
     </ISTRING>
     <ISTRING>
 	    <KEY>UPDATE</KEY>
-	    <VALUE>Запомнить</VALUE>
+	    <VALUE>Обновить</VALUE>
     </ISTRING>
     <ISTRING>
 	    <KEY>DELETE</KEY>
@@ -257,5 +257,13 @@
     <ISTRING>
         <KEY>EDITEMPLOY</KEY>
         <VALUE>Редактировать</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>EXITUS</KEY>
+        <VALUE>Выход</VALUE>
+    </ISTRING>
+    <ISTRING>
+        <KEY>CLEAREMPLO</KEY>
+        <VALUE>Очистить</VALUE>
     </ISTRING>
 </ISTRINGTABLE>

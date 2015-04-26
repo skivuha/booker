@@ -9,7 +9,6 @@ function addEvent() {
         method: 'POST',
         data: $("#modal").serialize()
     }).then(function(data){
-        console.log(data);
         var objJ = JSON.parse(data);
         if(objJ[0] == true) {
             $('#myModal').modal('hide');
@@ -36,7 +35,6 @@ function deleteEvent(value, doit)
         data: $("#details").serialize()
     }).then(function(data){
         var objJ = JSON.parse(data);
-        console.log(data);
         if(objJ[0] == true) {
             window.onunload = function(){
                 if (window.opener){
@@ -71,7 +69,6 @@ function updateEvent(value, doit)
         data: $("#details").serialize()
     }).then(function(data){
         var objJ = JSON.parse(data);
-        console.log(data);
         if(objJ[0] == true) {
             window.onunload = function(){
                 if (window.opener){

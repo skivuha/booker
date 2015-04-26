@@ -6,7 +6,7 @@
  * Model for admin page.
  */
 
-class Employee extends model
+class Employee extends Model
 {
 
 	private $flag;
@@ -77,7 +77,7 @@ class Employee extends model
 		{
 			$currentTime = time();
 			$id_employee = $this->data->getParams();
-			$rez = $this->queryToDbObj->deleteEmployee($id_employee['id']);
+			$rez = $this->queryToDbObj->setDeleteEmployee($id_employee['id']);
 			$this->queryToDbObj
 				->deleteAppointmentsCurrentEmployee($id_employee['id'],
 					$currentTime);

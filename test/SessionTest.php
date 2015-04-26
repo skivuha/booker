@@ -1,12 +1,9 @@
 <?php
-include("lib/models/Session.php");
+include("c:\OpenServer\domains\booker\lib\models\Session.php");
 class SessionTest extends PHPUnit_Framework_TestCase {
     function setUp()
     {
-        $this->session =new Session();
-        $this->string = 'mimimi';
-        $this->number = 4;
-        $this->array = array();
+        $this->session = Session::getInstance();
     }
 
     function tearDown()
@@ -14,11 +11,15 @@ class SessionTest extends PHPUnit_Framework_TestCase {
         $this->session = null;
     }
 
-    public function testSession()
+	public function __construct()
+	{
+	}
+
+    public function testSessionHasMethod()
     {
-      $this->assertTrue(is_string($this->session->getSession($this->string)));
-      $this->assertFalse(is_string($this->session->getSession($this->array)));
-      $this->assertTrue(is_string($this->session->getSession($this->number)));
+		$this->assertTrue(method_exists($this->session, 'setSession'));
+		$this->assertTrue(method_exists($this->session, 'getSession'));
+		$this->assertTrue(method_exists($this->session, 'removeSession'));
     }
 }
  

@@ -1,4 +1,10 @@
 <?php
+
+ /*
+ * Class: EventController
+ *
+ * Current controller work with all actions on events
+ */
 class EventController extends Controller
 {
 	private $valid;
@@ -15,6 +21,10 @@ class EventController extends Controller
 		$this->arrayLang();
 	}
 
+ /*
+ * Add action. Receives post array, validates all variables in array. And
+ * send all data to model.
+ */
 	public function addAction()
 	{
 		$action = $this->valid->clearDataArr($_POST);
@@ -32,6 +42,10 @@ class EventController extends Controller
 		}
 	}
 
+ /*
+ * Edit action. Receives get array, validates all variables in array. And
+ * send all data to model.
+ */
 	public function editAction()
 	{
 		$param = $this->data->getParams();
@@ -44,6 +58,10 @@ class EventController extends Controller
 		$this->view->setTemplateFile('details')->templateRender();
 	}
 
+ /*
+ * Update action. Receives get array, validates all variables in array.
+ * Determines what need to do, delete event or update new info.
+ */
 	public function updateAction()
 	{
 		$this->event->setRoom($this->room);
@@ -78,6 +96,9 @@ class EventController extends Controller
 		}
 	}
 
+ /*
+ * Send to view array. If success - true. If false - array error.
+ */
 	private function statusToAjax($status)
 	{
 		if(true === $status)

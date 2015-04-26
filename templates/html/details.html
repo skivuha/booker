@@ -12,7 +12,10 @@
     <title>{{TITLE}}</title>
 </head>
 <body>
-<div class="container well">
+<div class="container">
+<div
+        class="col-xs-8 col-md-8 col-md-offset-2 col-xs-offset-2 well
+        detailsWindow">
     <form method="post" id="details">
     <div class="row">
 
@@ -53,7 +56,7 @@
         </div>
     </div>
     <br>
-    <div class="row" {{RECURRENCE}}>
+    <div class="row" {{RECURRENCE}} style="{{HIDE}}">
         <div class="col-xs-12" >
             <input type="checkbox" value="{{RECURID}}"
                    name="recurrences" {{ACTIVE}}/>
@@ -63,7 +66,7 @@
 <span id="warningupdate">&nbsp;</span>
     <hr>
 
-    <div class="row">
+    <div class="row" style="{{HIDE}}">
         <div class="col-xs-6">
             <button class="form-control" type="button" form="details"
                     value="{{ID}}" name="update"
@@ -76,6 +79,6 @@
         </div>
     </div>
 </form>
-</div>
+</div></div>
 </body>
 </html>

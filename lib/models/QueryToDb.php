@@ -83,6 +83,7 @@ class QueryToDb
 		$result = $this->myPdoObj
 			->select('id_employee, mail_employee, name_employee')
 			->table('employee')
+			->where(array('status' => '0'), array('!='))
 			->query()
 			->commit();
 
@@ -90,15 +91,16 @@ class QueryToDb
 	}
 
  /*
- * Delete selected employee by id
+ * Set flag deleted employee by id
  *
  * @return: boolean
  */
-	public function deleteEmployee($id_employee)
+	public function setDeleteEmployee($id_employee)
 	{
 		$result = $this->myPdoObj
-			->delete()
+			->update()
 			->table('employee')
+			->set(array('status'=> 0, 'mail_employee' => ''))
 			->where(array('id_employee' => $id_employee), array('='))
 			->query()
 			->commit();
@@ -221,6 +223,11 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Select all appointments of current room
+ *
+ * @return: array
+ */
 	public function getCalendarAppointmentsSelectedMonth($first, $last, $room)
 	{
 		$result = $this->myPdoObj->select('id_appointment, description,
@@ -237,17 +244,31 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Select all active employee
+ *
+ * @return: array
+ */
 	public function getCalendarListEmployee()
 	{
 		$result = $this->myPdoObj->select('name_employee, id_employee')
 			->table('employee')
-			->where(array('name_employee' => 'root'), array('!='))
+			->where(array('name_employee' => 'root', 'status' => '0'),
+				array('!=', '!='))
 			->query()
 			->commit();
 
 		return $result;
 	}
 
+ /*
+ * Select event selected day and room
+ *
+ * @param startDay: begin current day
+ * @param endDay: end current day
+ * @param room: selected room
+ * @return: array
+ */
 	public function getEventSelectedDayAndRoom($startDay, $endDay, $room)
 	{
 		$result = $this->myPdoObj->select('id_appointment, description,
@@ -262,6 +283,16 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Add event without recurr.
+ *
+ * @param description: description
+ * @param employee: selected employee
+ * @param start: start time
+ * @param end: end time
+ * @param room: selected room
+ * @return: boolean
+ */
 	public function setEvent($description, $employee, $start, $end, $room)
 	{
 		$result = $this->myPdoObj->insert()
@@ -275,6 +306,17 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Add event with recurr.
+ *
+ * @param description: description
+ * @param employee: selected employee
+ * @param start: start time
+ * @param end: end time
+ * @param room: selected room
+ * @param id: unique id recurr
+ * @return: boolean
+ */
 	public function setEventWithRecur($description, $employee,
 									  $start, $end, $room, $id)
 	{
@@ -289,11 +331,21 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Get last inserting id
+ *
+ * @return: integer
+ */
 	public function getLastId()
 	{
 		return $this->myPdoObj->lastId;
 	}
 
+ /*
+ * Set id recurr into first event
+ *
+ * @return: boolean
+ */
 	public function setParentRecur($id)
 	{
 		$result = $this->myPdoObj->update()
@@ -306,6 +358,12 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Get event by id
+ *
+ * @param id: recurr id
+ * @return: array
+ */
 	public function getEventById($id)
 	{
 		$result = $this->myPdoObj->select('id_appointment, description,
@@ -318,17 +376,30 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Get employee list without root
+ *
+ * @return: array
+ */
 	public function getEmployeeListExeptRoot()
 	{
 		$result = $this->myPdoObj->select('name_employee, id_employee')
 			->table('employee')
-			->where(array('name_employee' => 'root'), array('!='))
+			->where(array('name_employee' => 'root', 'status' => '0'),
+				array('!=', '!='))
 			->query()
 			->commit();
 
 		return $result;
 	}
 
+ /*
+ * Delete event without recurr
+ *
+ * @param id: current id of event
+ * @param currentTime: current timestamp
+ * @return: boolean
+ */
 	public function deleteEventNoRecur($id,$currentTime)
 	{
 		$result = $this->myPdoObj->delete()
@@ -341,6 +412,13 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Delete event with recurr
+ *
+ * @param recur: current id of recurr
+ * @param currentTime: current timestamp
+ * @return: boolean
+ */
 	public function deleteEventWithRecur($recur,$currentTime)
 	{
 		$result = $this->myPdoObj->delete()
@@ -353,6 +431,15 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Get all event of current day
+ *
+ * @param startDay: start timestamp of current day
+ * @param endDay: end timestamp of current day
+ * @param id: id details event
+ * @param room: current room
+ * @return: array
+ */
 	public function getEventFromDay($startDay, $endDay, $id, $room)
 	{
 		$result = $this->myPdoObj->select('id_appointment, description,
@@ -369,6 +456,40 @@ class QueryToDb
 		return $result;
 	}
 
+ /*
+ * Set new data in editing event without recurr
+ *
+ * @param start: new start timestamp
+ * @param end: new end timestamp
+ * @param id_a: id details event
+ * @param desc: new description
+ * @param id_e: current employee
+ * @return: boolean
+ */
+	public function setNewDataInEventNoRecur($desc, $id_e, $start, $end, $id_a)
+	{
+		$this->myPdoObj->update()->table("appointments")
+			->set(array('description' => $desc,
+						'id_employee' => $id_e,
+						'start' => $start,
+						'end' => $end,
+						'recursion' => '0'))
+			->where(array('id_appointment' => $id_a),
+				array('='))
+			->query()
+			->commit();
+	}
+
+ /*
+ * Set new data in editing event with recurr
+ *
+ * @param start: new start timestamp
+ * @param end: new end timestamp
+ * @param id_a: id details event
+ * @param desc: new description
+ * @param id_e: current employee
+ * @return: boolean
+ */
 	public function setNewDataInEvent($desc, $id_e, $start, $end, $id_a)
 	{
 		$this->myPdoObj->update()->table("appointments")
@@ -382,6 +503,12 @@ class QueryToDb
 			->commit();
 	}
 
+ /*
+ * Get all events of current recurr
+ *
+ * @param recur: number of current recurr
+ * @return: array
+ */
 	public function getAllEvents($recur)
 	{
 		$result = $this->myPdoObj->select('id_appointment, description,

@@ -2,9 +2,13 @@ table{
     min-width: 770px !important;
     max-width: 1280px !important;
 }
+.detailsWindow{
+    min-width: 300px;
+    max-width: 550px;
+}
 table tr td{
     min-width: 163px;
-    height: 110px;
+    height: 80px;
 }
 table tr th{
     text-align: center;
@@ -68,4 +72,7 @@ textarea{
     color: green;
     font-weight: bold;
     margin-left: 60px;
+}
+.employeebutton{
+    text-align: center;
 }
