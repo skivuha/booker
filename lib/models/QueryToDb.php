@@ -424,8 +424,7 @@ class QueryToDb
 		$result = $this->myPdoObj->delete()
 			->table('appointments')
 			->where(array('recursion'=>$recur,
-					'start'=>$currentTime, 
-					'id_employee' => '$id'),array('=','>=', '='))
+					'start'=>$currentTime),array('=','>='))
 			->query()
 			->commit();
 
