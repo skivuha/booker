@@ -472,12 +472,26 @@ class Event extends Model
 						|| $updateData['employee'] ==
 						$this->sessionObj->getSession('id_employee'))
 					{
+						$data = $this->queryToDbObj->
+						getEventById($updateData['update']);
+						if($data[0]['id_employee'] == $updateData['employee'])
+						{
 						$this->queryToDbObj->setNewDataInEvent
 						($updateData['description'],
 							$updateData['employee'], $startTimeUpdate,
 							$endTimeUpdate, $updateData['update']);
 
 						return true;
+						}
+						else
+						{
+						$this->queryToDbObj->setNewDataInEventNoRecur
+						($updateData['description'],
+							$updateData['employee'], $startTimeUpdate,
+							$endTimeUpdate, $updateData['update']);
+
+						return true;
+						}
 					}
 					else
 					{

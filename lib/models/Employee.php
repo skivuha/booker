@@ -207,7 +207,16 @@ class Employee extends Model
 				}
 				if (0 != strlen($email))
 				{
-					$array['mail_employee'] = $email;
+				$arr = $this->queryToDbObj
+						->getEmployeeForCheckExists($email);
+						if(!empty($arr))
+						{
+						    $this->error['ERROR_STATUS'] = ERROR_EXISTS;
+						}
+						else
+						{
+						    $array['mail_employee'] = $email;
+						}
 				}
 				if (0 != strlen($pass))
 				{
