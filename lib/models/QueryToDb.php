@@ -419,12 +419,13 @@ class QueryToDb
  * @param currentTime: current timestamp
  * @return: boolean
  */
-	public function deleteEventWithRecur($recur,$currentTime)
+	public function deleteEventWithRecur($recur, $currentTime, $id)
 	{
 		$result = $this->myPdoObj->delete()
 			->table('appointments')
 			->where(array('recursion'=>$recur,
-					'start'=>$currentTime),array('=','>='))
+					'start'=>$currentTime, 'id_employee' => $id),
+				array('=','>=','='))
 			->query()
 			->commit();
 
@@ -491,6 +492,29 @@ class QueryToDb
  * @return: boolean
  */
 	public function setNewDataInEvent($desc, $id_e, $start, $end, $id_a)
+	{
+		$this->myPdoObj->update()->table("appointments")
+			->set(array('description' => $desc,
+						'id_employee' => $id_e,
+						'start' => $start,
+						'end' => $end))
+			->where(array('id_appointment' => $id_a, 'id_employee' => $id_e),
+				array('=', '='))
+			->query()
+			->commit();
+	}
+
+ /*
+ * Set new data in editing event with recurr
+ *
+ * @param start: new start timestamp
+ * @param end: new end timestamp
+ * @param id_a: id details event
+ * @param desc: new description
+ * @param id_e: current employee
+ * @return: boolean
+ */
+	public function setNewDataInEventRoot($desc, $id_e, $start, $end, $id_a)
 	{
 		$this->myPdoObj->update()->table("appointments")
 			->set(array('description' => $desc,

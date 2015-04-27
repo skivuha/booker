@@ -5,7 +5,7 @@
  */
 function addEvent() {
     $.ajax({
-        url: '/~user2/PHP/booker/Event/add/',
+        url: '/Event/add/',
         method: 'POST',
         data: $("#modal").serialize()
     }).then(function(data){
@@ -31,7 +31,7 @@ function addEvent() {
 function deleteEvent(value, doit)
 {
     $.ajax({
-        url: '/~user2/PHP/booker/Event/update/id/'+value+'/do/'+doit,
+        url: '/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){
@@ -65,7 +65,7 @@ function deleteEvent(value, doit)
 function updateEvent(value, doit)
 {
     $.ajax({
-        url: '/~user2/PHP/booker/Event/update/id/'+value+'/do/'+doit,
+        url: '/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){

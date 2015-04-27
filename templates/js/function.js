@@ -185,7 +185,7 @@ function setNewWindow()
     $('.event').bind('click', function () {
         var target = event.target || event.srcElement;
         var id = $(this).attr('name');
-        window.open('/~user2/PHP/booker/Event/edit/id/'+id, 'Details', 'location, width = 550px,' +
+        window.open('/Event/edit/id/'+id, 'Details', 'location, width = 550px,' +
         'height = 450px, top = '+height+'px, left = '+widht+'px ').focus();
     });
 }

@@ -407,7 +407,6 @@ class Event extends Model
 				$this->queryToDbObj
 					->deleteEventWithRecur($this->recurent, 
 					$currentDay, $updateData);
-
 				return true;
 			}
 			else
@@ -475,6 +474,7 @@ class Event extends Model
 					{
 						$data = $this->queryToDbObj->
 						getEventById($updateData['update']);
+
 						if($data[0]['id_employee'] == $updateData['employee'])
 						{
 						$this->queryToDbObj->setNewDataInEvent
@@ -555,12 +555,19 @@ class Event extends Model
 					    && $currentTime < $currentDay
 		        	    && $startTimeUpdate < $endTimeUpdate)
 					{
-						if (true === $this->userRole
-							|| $updateData['employee'] == $this->sessionObj
+						if ($updateData['employee'] == $this->sessionObj
 								->getSession('id_employee'))
 						{
 							$this->queryToDbObj
 								->setNewDataInEvent($updateData['description'],
+									$updateData['employee'], $startTimeUpdate,
+									$endTimeUpdate, $id_appointment);
+						}
+						elseif(true === $this->userRole)
+						{
+							$this->queryToDbObj
+								->setNewDataInEventRoot
+								($updateData['description'],
 									$updateData['employee'], $startTimeUpdate,
 									$endTimeUpdate, $id_appointment);
 						}
