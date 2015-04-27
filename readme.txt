@@ -1,7 +1,7 @@
-В данной работе использовался преймущественно PHP. 
-Ajax используется в добавлении события, удалении и редактировании.
+In this work used mostly PHP. 
+Ajax was used in adding, editing, removal events. 
 
-Пароли для входа:
+Password:
 admin:
 root@root.com
 123456

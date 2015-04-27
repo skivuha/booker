@@ -12,7 +12,8 @@ function addEvent() {
         var objJ = JSON.parse(data);
         if(objJ[0] == true) {
             $('#myModal').modal('hide');
-            setTimeout('window.location.href="/~user2/PHP/booker/Calendar/index"',500);
+            //setTimeout('window.location.href="/~user2/PHP/booker/Calendar/index"',500);
+            setTimeout('window.location.href= window.location.href',500);
         }
         else
         {
