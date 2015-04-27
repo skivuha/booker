@@ -46,7 +46,7 @@ class Router
 			$keys = $values = array();
 			for ($i = PARAM, $cnt = count($splits); $i < $cnt; $i ++)
 			{
-				if (0 == $i % 2)
+				if (0 != $i % 2)
 				{
 					$keys[] = $splits[$i];
 				}

@@ -1,13 +1,13 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\core\Model.php");
-include("c:\OpenServer\domains\booker\lib\models\Session.php");
-include("c:\OpenServer\domains\booker\lib\models\MyPdo.php");
-include("c:\OpenServer\domains\booker\lib\models\QueryToDb.php");
-include("c:\OpenServer\domains\booker\lib\models\Validator.php");
-include("c:\OpenServer\domains\booker\lib\models\Encode.php");
-include("c:\OpenServer\domains\booker\lib\models\Cookie.php");
-include("c:\OpenServer\domains\booker\lib\core\Router.php");
-include("c:\OpenServer\domains\booker\lib\models\Calendar.php");
+include("lib/core/Model.php");
+include("lib/models/Session.php");
+include("lib/models/MyPdo.php");
+include("lib/models/QueryToDb.php");
+include("lib/models/Validator.php");
+include("lib/models/Encode.php");
+include("lib/models/Cookie.php");
+include("lib/core/Router.php");
+include("lib/models/Calendar.php");
 class CalendarTest extends PHPunit_Framework_TestCase
 
 {

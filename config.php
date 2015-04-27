@@ -4,19 +4,7 @@ date_default_timezone_set('Europe/Kiev');
 define('SALT', "mimimi");
 define('TEMPLATE', "templates/html/");
 define('LANG', "templates/lang/");
-//home
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'booker');
-define('DB_PASS', '');
-define('DB_LOGIN', 'root');
 
-define('PATH', '/');
-
-define('CONTROLLER', '0');
-define('ACTION', '1');
-define('PARAM', '2');
-
-/*
 //DB
 define('DB_HOST', 'localhost');
 define('DB_LOGIN', 'user2');
@@ -34,7 +22,7 @@ define('PARAM', '5');
 //path to templates
 define('TEMPLATE', "/usr/home/user2/public_html/PHP/booker/templates/html/");
 define('LANG', "/usr/home//user2/public_html/PHP/booker/templates/lang/");
-*/
+
 //encode
 define('STRING_LENGHT', 10);
 

@@ -1,5 +1,5 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\Cookie.php");
+include("lib/models/Cookie.php");
 class SessionTest extends PHPUnit_Framework_TestCase {
 
  		public function testCookieRead() 

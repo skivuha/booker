@@ -1,5 +1,5 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\Encode.php");
+include("lib/models/Encode.php");
 class EncodeTest extends PHPUnit_Framework_TestCase {
     function setUp()
     {

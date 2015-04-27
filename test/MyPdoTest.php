@@ -1,6 +1,6 @@
 <?php
-include("c:\OpenServer\domains\booker\config.php");
-include("c:\OpenServer\domains\booker\lib\models\MyPdo.php");
+include("config.php");
+include("lib/models/MyPdo.php");
 class MyPdoTest extends PHPUnit_Framework_TestCase {
 
 	public function __construct()

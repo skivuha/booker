@@ -181,11 +181,11 @@ function getCookie(name) {
 function setNewWindow()
 {
     var height = (screen.height/2)-225;
-    var widht = (screen.width/2)-175;
+    var widht = (screen.width/2)-275;
     $('.event').bind('click', function () {
         var target = event.target || event.srcElement;
         var id = $(this).attr('name');
-        window.open('/Event/edit/id/'+id, 'Details', 'location, width = 550px,' +
+        window.open('/~user2/PHP/booker/Event/edit/id/'+id, 'Details', 'location, width = 550px,' +
         'height = 450px, top = '+height+'px, left = '+widht+'px ').focus();
     });
 }

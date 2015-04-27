@@ -1,5 +1,5 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\Lang.php");
+include("lib/models/Lang.php");
 class LangTest extends PHPUnit_Framework_TestCase {
 
 	public function testHasMethod()

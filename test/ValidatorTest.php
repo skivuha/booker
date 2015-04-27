@@ -1,5 +1,5 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\Validator.php");
+include("lib/models/Validator.php");
 class ValidatorTest extends PHPunit_Framework_TestCase
 
 {

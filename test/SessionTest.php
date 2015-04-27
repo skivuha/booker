@@ -1,5 +1,5 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\Session.php");
+include("lib/models/Session.php");
 class SessionTest extends PHPUnit_Framework_TestCase {
     function setUp()
     {

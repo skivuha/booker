@@ -1,6 +1,6 @@
 <?php
-include("c:\OpenServer\domains\booker\lib\models\QueryToDb.php");
-include("c:\OpenServer\domains\booker\lib\models\MyPdo.php");
+include("lib/models/QueryToDb.php");
+include("lib/models/MyPdo.php");
 class MyPdoTest extends PHPUnit_Framework_TestCase {
 
 
