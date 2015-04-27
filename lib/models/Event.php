@@ -405,7 +405,8 @@ class Event extends Model
 				|| $updateData == $this->sessionObj->getSession('id_employee'))
 			{
 				$this->queryToDbObj
-					->deleteEventWithRecur($this->recurent, $currentDay);
+					->deleteEventWithRecur($this->recurent, 
+					$currentDay, $updateData);
 
 				return true;
 			}
