@@ -5,14 +5,13 @@
  */
 function addEvent() {
     $.ajax({
-        url: '/Event/add/',
+        url: '/~user2/PHP/booker/Event/add/',
         method: 'POST',
         data: $("#modal").serialize()
     }).then(function(data){
         var objJ = JSON.parse(data);
         if(objJ[0] == true) {
             $('#myModal').modal('hide');
-            //setTimeout('window.location.href="/~user2/PHP/booker/Calendar/index"',500);
             setTimeout('window.location.href= window.location.href',500);
         }
         else
@@ -31,7 +30,7 @@ function addEvent() {
 function deleteEvent(value, doit)
 {
     $.ajax({
-        url: '/Event/update/id/'+value+'/do/'+doit,
+        url: '/~user2/PHP/booker/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){
@@ -65,7 +64,7 @@ function deleteEvent(value, doit)
 function updateEvent(value, doit)
 {
     $.ajax({
-        url: '/Event/update/id/'+value+'/do/'+doit,
+        url: '/~user2/PHP/booker/Event/update/id/'+value+'/do/'+doit,
         method: 'POST',
         data: $("#details").serialize()
     }).then(function(data){

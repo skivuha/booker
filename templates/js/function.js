@@ -170,7 +170,8 @@ function setMaxDuration()
   */
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')
+        + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -185,7 +186,8 @@ function setNewWindow()
     $('.event').bind('click', function () {
         var target = event.target || event.srcElement;
         var id = $(this).attr('name');
-        window.open('/Event/edit/id/'+id, 'Details', 'location, width = 550px,' +
+        window.open('/~user2/PHP/booker/Event/edit/id/'+id, 'Details',
+            'location, width = 550px,' +
         'height = 450px, top = '+height+'px, left = '+widht+'px ').focus();
     });
 }
